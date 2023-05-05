@@ -1,5 +1,6 @@
 altair
-snowflake.connector
+snowflake-connector-python[pandas]
+snowflake-sqlalchemy
 numpy
 pandas
 streamlit
