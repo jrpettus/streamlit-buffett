@@ -9,5 +9,5 @@ seaborn
 openai
 streamlit_chat
 langchain
-pinecone
+pinecone-client
 sqlalchemy
