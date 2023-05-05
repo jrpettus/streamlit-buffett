@@ -143,7 +143,7 @@ with tab2:
         docsearch = Pinecone.from_existing_index(index_name,embeddings)
 
         pdf_qa = ChatVectorDBChain.from_llm(OpenAI(temperature=0.1, model_name="gpt-3.5-turbo"),
-                            docsearch, return_source_documents=True)
+                            docsearch, return_source_documents=True,  openai_api_key=st.secrets["openai_key"])
 
         query = st.text_input("What would you like to ask Warren? (e.g List reasons you purchased Apple and why it has worked out so well?)")
         if len(query)>1:
