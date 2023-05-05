@@ -142,7 +142,7 @@ with st.sidebar:
 
 with tab1:
     st.markdown("""
-    # Financials :chart_with_upwards_trend:
+    # Financial Data Exploration :chart_with_upwards_trend:
 
     View financial statement data for selected companies owned by Warren Buffet by querying Snowflake directly.
 
