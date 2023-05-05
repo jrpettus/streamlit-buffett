@@ -197,7 +197,7 @@ with tab1:
             ).properties(title="Free Cash Flow")
         ) 
 
-        st.metric('Debt to Equity', f'{round(debt_ratio[0],2)}%', delta=round(debt_ratio[0]-debt_ratio[1],2), delta_color="normal", help=None, label_visibility="visible")
+        st.metric('Debt to Equity', f'{round(debt_ratio[0],2)}', delta=round(debt_ratio[0]-debt_ratio[1],2), delta_color="normal", help=None, label_visibility="visible")
         st.altair_chart(alt.Chart(bal_st.head(year_cutoff)).mark_bar().encode(
             x='year',
             y='debt_to_equity'
