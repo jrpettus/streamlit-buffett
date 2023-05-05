@@ -121,11 +121,11 @@ with st.sidebar:
 
     Tabs:
 
-    ## Tab1: Financial Data Exploration :chart_with_upwards_trend: 
+    ### 1: Financial Data Exploration :chart_with_upwards_trend:
     Query Snowflake to view financials for various Warren Buffett investments going back 30 years by querying Snowflake directly
-    ## Tab2: Financial Statement Natural Language Querying :dollar:
+    ### 2: Financial Statement Natural Language Querying :dollar:
     Ask financial questions using natural language regarding the investments
-    ## Tab3: Shareholder Letter Natural Language Querying :memo:
+    ### 3: Shareholder Letter Natural Language Querying :memo:
     Ask various questions based on Warren Buffett's shareholder letters from 1977 through 2022  
 
     **Current Available Companies to ask financials about for tabs 1 and 2:**
