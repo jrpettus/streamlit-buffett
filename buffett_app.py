@@ -166,11 +166,13 @@ with tab1:
     debt_ratio = kpi_recent(bal_st, 'debt_to_equity', periods=2, unit=1)
   
     col1, col2 = st.columns((1,1))
+    # year cutoff
+    year_cutoff = 20
 
     with col1:
         #st.subheader("Net Income")
         st.metric('Net Income', f'${net_inc[0]}B', delta=round(net_inc[0]-net_inc[1],2), delta_color="normal", help=None, label_visibility="visible")
-        st.altair_chart(alt.Chart(inc_st.head(10)).mark_bar().encode(
+        st.altair_chart(alt.Chart(inc_st.head(year_cutoff)).mark_bar().encode(
             x='year',
             y='netincome'
             ).properties(title="Net Income")
@@ -179,7 +181,7 @@ with tab1:
         #st.subheader("Net Profit Margin")
         # netincome ratio
         st.metric('Net Profit Margin', f'{round(net_inc_ratio[0]*100,2)}%', delta=round(net_inc_ratio[0]-net_inc_ratio[1],2), delta_color="normal", help=None, label_visibility="visible")
-        st.altair_chart(alt.Chart(inc_st.head(10)).mark_bar().encode(
+        st.altair_chart(alt.Chart(inc_st.head(year_cutoff)).mark_bar().encode(
             x='year',
             y='netincomeratio'
             ).properties(title="Net Profit Margin")
@@ -189,14 +191,14 @@ with tab1:
         #st.subheader("Free Cashflow")
         # free cashflow
         st.metric('Free Cashflow', f'${fcf[0]}B', delta=round(fcf[0]-fcf[1],2), delta_color="normal", help=None, label_visibility="visible")
-        st.altair_chart(alt.Chart(cf_st.head(10)).mark_bar().encode(
+        st.altair_chart(alt.Chart(cf_st.head(year_cutoff)).mark_bar().encode(
             x='year',
             y='freecashflow'
             ).properties(title="Free Cash Flow")
         ) 
 
-        st.metric('Debt to Equity', f'{round(debt_ratio[0]*100,2)}%', delta=round(debt_ratio[0]-debt_ratio[1],2), delta_color="normal", help=None, label_visibility="visible")
-        st.altair_chart(alt.Chart(bal_st.head(10)).mark_bar().encode(
+        st.metric('Debt to Equity', f'{round(debt_ratio[0],2)}%', delta=round(debt_ratio[0]-debt_ratio[1],2), delta_color="normal", help=None, label_visibility="visible")
+        st.altair_chart(alt.Chart(bal_st.head(year_cutoff)).mark_bar().encode(
             x='year',
             y='debt_to_equity'
             ).properties(title="Debt to Equity")
