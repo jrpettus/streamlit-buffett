@@ -150,10 +150,10 @@ with tab1:
     """)
     sel_tick = st.selectbox("Select a ticker to view", tick_list)
 
-    inc_st = sf_query(f"select * from financials.public.income_statement_annual where ticker = '{sel_tick}'")
-    bal_st = sf_query(f"select * from financials.public.balance_sheet_annual where ticker = '{sel_tick}'")
+    inc_st = sf_query(f"select * from financials.public.income_statement_annual where ticker = '{sel_tick}' order by year desc")
+    bal_st = sf_query(f"select * from financials.public.balance_sheet_annual where ticker = '{sel_tick}' order by year desc")
     bal_st['debt_to_equity'] = bal_st['totaldebt'].div(bal_st['totalequity'])
-    cf_st = sf_query(f"select * from financials.public.cash_flow_statement_annual where ticker = '{sel_tick}'")
+    cf_st = sf_query(f"select * from financials.public.cash_flow_statement_annual where ticker = '{sel_tick}' order by year desc")
 
     # metrics for kpi cards
     def kpi_recent(df, metric, periods=2, unit=1000000000):
@@ -170,7 +170,7 @@ with tab1:
     with col1:
         #st.subheader("Net Income")
         st.metric('Net Income', f'${net_inc[0]}B', delta=round(net_inc[0]-net_inc[1],2), delta_color="normal", help=None, label_visibility="visible")
-        st.altair_chart(alt.Chart(inc_st).mark_bar().encode(
+        st.altair_chart(alt.Chart(inc_st.head(10)).mark_bar().encode(
             x='year',
             y='netincome'
             ).properties(title="Net Income")
@@ -179,7 +179,7 @@ with tab1:
         #st.subheader("Net Profit Margin")
         # netincome ratio
         st.metric('Net Profit Margin', f'{round(net_inc_ratio[0]*100,2)}%', delta=round(net_inc_ratio[0]-net_inc_ratio[1],2), delta_color="normal", help=None, label_visibility="visible")
-        st.altair_chart(alt.Chart(inc_st).mark_bar().encode(
+        st.altair_chart(alt.Chart(inc_st.head(10)).mark_bar().encode(
             x='year',
             y='netincomeratio'
             ).properties(title="Net Profit Margin")
@@ -189,14 +189,14 @@ with tab1:
         #st.subheader("Free Cashflow")
         # free cashflow
         st.metric('Free Cashflow', f'${fcf[0]}B', delta=round(fcf[0]-fcf[1],2), delta_color="normal", help=None, label_visibility="visible")
-        st.altair_chart(alt.Chart(cf_st).mark_bar().encode(
+        st.altair_chart(alt.Chart(cf_st.head(10)).mark_bar().encode(
             x='year',
             y='freecashflow'
             ).properties(title="Free Cash Flow")
         ) 
 
         st.metric('Debt to Equity', f'{round(debt_ratio[0]*100,2)}%', delta=round(debt_ratio[0]-debt_ratio[1],2), delta_color="normal", help=None, label_visibility="visible")
-        st.altair_chart(alt.Chart(bal_st).mark_bar().encode(
+        st.altair_chart(alt.Chart(bal_st.head(10)).mark_bar().encode(
             x='year',
             y='debt_to_equity'
             ).properties(title="Debt to Equity")
