@@ -3,7 +3,6 @@ snowflake-connector-python
 snowflake-sqlalchemy
 numpy
 pandas
-streamlit
 matplotlib
 seaborn
 openai
