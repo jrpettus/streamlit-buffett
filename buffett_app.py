@@ -163,7 +163,7 @@ with tab1:
     net_inc_rat = kpi_recent(inc_st, 'netincomeratio', periods=2, unit=1)
     fcf = kpi_recent(cf_st, 'freecashflow' )
   
-    col1, col2, col3 = st.columns(3)
+    col1, col2, col3 = st.columns((1,1,1))
 
     with col1:
         st.subheader("Net Income")
