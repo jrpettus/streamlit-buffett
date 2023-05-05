@@ -121,7 +121,7 @@ with st.sidebar:
 
     Tabs:
 
-    ## Tab1: Financial Data Exploration :chart_with_upwards_trend: : 
+    ## Tab1: Financial Data Exploration :chart_with_upwards_trend: 
     Query Snowflake to view financials for various Warren Buffett investments going back 30 years by querying Snowflake directly
     ## Tab2: Financial Statement Natural Language Querying :dollar:
     Ask financial questions using natural language regarding the investments
