@@ -115,7 +115,7 @@ tab1, tab2, tab3, tab4 = st.tabs(["Financial Data Exploration :chart_with_upward
 
 with st.sidebar:
     st.markdown("""
-    # View into Warren Buffett :moneybag:
+    # Ask the Oracle of Omaha: Using LLMs to Provide a View into the World of Warren Buffett :moneybag:
     This app enables various exploration into the World of Warren Buffett, including financials for 
     large language models (LLMs) leveraging Snowflake :snowflake:, Streamlit, OpenAI, Langchain and Pinecone to dive 
 
