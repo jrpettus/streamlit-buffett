@@ -1,0 +1,12 @@
+altair
+snowflake.connector
+numpy
+pandas
+streamlit
+matplotlib
+seaborn
+openai
+streamlit_chat
+langchain
+pinecone
+sqlalchemy
