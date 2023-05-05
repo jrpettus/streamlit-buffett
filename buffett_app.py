@@ -118,7 +118,7 @@ with tab1:
     st.dataframe(df)
 
 with tab2:
-    llm = llm_connection(temperature=0, openai_api_key=st.secrets["openai_key"] )
+    llm = llm_connection(temperature=0 )
     str_input = st.text_input(label='What would you like to answer? (e.g. What was the revenue and net income for Apple for the last 5 years?)')
 
     if len(str_input) > 1:
