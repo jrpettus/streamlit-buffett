@@ -38,22 +38,22 @@ sf_wh = st.secrets["warehouse"]
 st.set_page_config(layout="wide")
 
 # Uses st.cache_resource to only run once.
-@st.cache_resource
+#@st.cache_resource
 def llm_connection(temperature=0):
     return OpenAI(temperature=temperature, openai_api_key=st.secrets["openai_key"] )
 
-@st.cache_resource
+#@st.cache_resource
 def sf_engine():
     engine = create_engine(
         f"snowflake://{sf_user}:{sf_pw}@{sf_acct}/{sf_db}/{sf_schema}?warehouse={sf_wh}"
         )
     return engine
 
-@st.cache_resource
+#@st.cache_resource
 def sf_connection():
     return engine.connect()
 
-@st.cache_resource
+#@st.cache_resource
 def sql_db():
     return SQLDatabase(engine)
 
@@ -85,16 +85,16 @@ PROMPT = PromptTemplate(
     input_variables=["input"], template=_DEFAULT_TEMPLATE
 )
 
-@st.cache_data(ttl=600)
+#@st.cache_data(ttl=600)
 def db_chain(str_input):
     sf_chain = SQLDatabaseChain(llm=llm, database=sql_database, prompt=PROMPT, return_intermediate_steps=True)
     return sf_chain(str_input)
 
-@st.cache_data(ttl=600)
+#@st.cache_data(ttl=600)
 def sf_query(str_input):
     return pd.read_sql(str_input, connection)
 
-@st.cache_resource
+#@st.cache_resource
 def pinecone_init():
     return pinecone.init(
     api_key=st.secrets['pinecone_key'], 
