@@ -116,13 +116,13 @@ tab1, tab2, tab3, tab4 = st.tabs(["Financial Data Exploration :chart_with_upward
 with st.sidebar:
     st.markdown("""
     # Ask the Oracle of Omaha: Using LLMs to Provide a View into the World of Warren Buffett :moneybag:
-    This app enables various exploration into the World of Warren Buffett, including financials for 
-    large language models (LLMs) leveraging Snowflake :snowflake:, Streamlit, OpenAI, Langchain and Pinecone to dive 
+    This app enables exploration into the World of Warren Buffett, enabling you to ask financial questions regarding his top investments and over 40 years of his shareholder letters.
+    This app is powered by Snowflake :snowflake:, Streamlit, OpenAI, Langchain and Pinecone, leveraging Large Language Models (LLMs)
 
     Tabs:
 
     ### 1: Financial Data Exploration :chart_with_upwards_trend:
-    Query Snowflake to view financials for various Warren Buffett investments going back 30 years by querying Snowflake directly
+    Query Snowflake to view financials for various Warren Buffett investments
     ### 2: Financial Statement Natural Language Querying :dollar:
     Ask financial questions using natural language regarding the investments
     ### 3: Shareholder Letter Natural Language Querying :memo:
