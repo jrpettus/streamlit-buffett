@@ -228,8 +228,8 @@ with tab2:
         try:
             output = db_chain(str_input)
             st.write(output['result'])
+            st.dataframe(sf_query(output['intermediate_steps'][1]))
             st.write(output)
-            #st.dataframe(sf_query(output['intermediate_steps'][0]))
         except:
             st.write("Please try to improve your prompt or provide feedback on the error encountered")
 
