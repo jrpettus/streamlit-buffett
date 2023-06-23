@@ -68,10 +68,9 @@ CASH_FLOW_STATEMENT_ANNUAL (alisas: cfs),
 BALANCE_SHEET_ANNUAL (alias: bsa)
 Only use the alias after using the full table name and only include the relevant financial statements.
 Make sure any request is translated to one or more of these specific table names including the "_ANNUAL" suffix.
-Column names do not have a space and they do not have an underscore so you will need to translate a request for'Net income' to something like netincome or free cash flow to freecashflow
-In the event that a request is made that would come from multiple financial statements, then join based on the year and ticker columns. For instance, if the netincome and assets are necessary take netincome from the income statement and assets from the balance sheet statement and join based on year.
+In the event that a request is made that would come from multiple financial statements, then join based on the year and ticker columns. For instance, if the net_income and assets are necessary take netincome from the income statement and assets from the balance sheet statement and join based on year.
 It is very important to create an alias for each table during the join and don't bring in year multiple times for the resulting output to avoid ambiguous names. Just choose one of the year columns instead
-A user may request total assets in which this means totalassets column and not to sum assets
+A user may request total assets in which this means total_assets column and not to sum assets
 
 Use the following format:
 
@@ -160,9 +159,9 @@ with tab1:
         return df.sort_values('year',ascending=False).head(periods)[metric]/unit
     
     # find the most recent 2 periods
-    net_inc = kpi_recent(inc_st, 'netincome')
-    net_inc_ratio = kpi_recent(inc_st, 'netincomeratio', periods=2, unit=1)
-    fcf = kpi_recent(cf_st, 'freecashflow' )
+    net_inc = kpi_recent(inc_st, 'net_income')
+    net_inc_ratio = kpi_recent(inc_st, 'net_income_ratio', periods=2, unit=1)
+    fcf = kpi_recent(cf_st, 'free_cash_flow' )
     debt_ratio = kpi_recent(bal_st, 'debt_to_equity', periods=2, unit=1)
   
     col1, col2 = st.columns((1,1))
@@ -174,7 +173,7 @@ with tab1:
         st.metric('Net Income', f'${net_inc[0]}B', delta=round(net_inc[0]-net_inc[1],2), delta_color="normal", help=None, label_visibility="visible")
         st.altair_chart(alt.Chart(inc_st.head(year_cutoff)).mark_bar().encode(
             x='year',
-            y='netincome'
+            y='net_income'
             ).properties(title="Net Income")
         ) 
         
@@ -183,7 +182,7 @@ with tab1:
         st.metric('Net Profit Margin', f'{round(net_inc_ratio[0]*100,2)}%', delta=round(net_inc_ratio[0]-net_inc_ratio[1],2), delta_color="normal", help=None, label_visibility="visible")
         st.altair_chart(alt.Chart(inc_st.head(year_cutoff)).mark_bar().encode(
             x='year',
-            y='netincomeratio'
+            y='net_income_ratio'
             ).properties(title="Net Profit Margin")
         ) 
     
@@ -193,7 +192,7 @@ with tab1:
         st.metric('Free Cashflow', f'${fcf[0]}B', delta=round(fcf[0]-fcf[1],2), delta_color="normal", help=None, label_visibility="visible")
         st.altair_chart(alt.Chart(cf_st.head(year_cutoff)).mark_bar().encode(
             x='year',
-            y='freecashflow'
+            y='free_cash_flow'
             ).properties(title="Free Cash Flow")
         ) 
 
