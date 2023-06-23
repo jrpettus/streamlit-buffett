@@ -224,13 +224,14 @@ with tab2:
     str_input = st.text_input(label='What would you like to answer? (e.g. What was the revenue and net income for Apple for the last 5 years?)')
 
     if len(str_input) > 1:
-        try:
-            output = db_chain(str_input)
-            st.write(output['result'])
-            st.dataframe(sf_query(output['intermediate_steps'][1]))
-            #st.write(output)
-        except:
-            st.write("Please try to improve your prompt or provide feedback on the error encountered")
+        with st.spinner('Looking up your question in Snowflake now...'):
+            try:
+                output = db_chain(str_input)
+                st.write(output['result'])
+                st.dataframe(sf_query(output['intermediate_steps'][1]))
+                #st.write(output)
+            except:
+                st.write("Please try to improve your prompt or provide feedback on the error encountered")
 
         #llm(f"Based on the output provided in {output['result']} produce python code to turn the data into a dataframe and plot the results but skip the import steps")
         #agent_executor.run(f"Based on the output provided in {output['result']}, create a dataframe of the contents and plot the results with an informative title")
@@ -273,14 +274,15 @@ with tab2:
 
         query = st.text_input("What would you like to ask Warren Buffett?")
         if len(query)>1:
-            try:
-                result = pdf_question(query)
-                #print(result)
-                st.write(result['answer'])
-                #st.markdown("Additional details from the search result")
-                #st.write(result)
-            except:
-                st.write("Please try to improve your prompt or provide feedback on the error encountered")
+            with st.spinner('Looking through lots of Shareholder letters now...'):
+                try:
+                    result = pdf_question(query)
+                    #print(result)
+                    st.write(result['answer'])
+                    #st.markdown("Additional details from the search result")
+                    #st.write(result)
+                except:
+                    st.write("Please try to improve your prompt or provide feedback on the error encountered")
 
 with tab4:
     st.markdown("""
