@@ -151,7 +151,7 @@ with tab1:
 
     inc_st = sf_query(f"select * from {sf_db}.{sf_schema}.income_statement_annual where ticker = '{sel_tick}' order by year desc")
     bal_st = sf_query(f"select * from {sf_db}.{sf_schema}.balance_sheet_annual where ticker = '{sel_tick}' order by year desc")
-    bal_st['debt_to_equity'] = bal_st['totaldebt'].div(bal_st['totalequity'])
+    bal_st['debt_to_equity'] = bal_st['total_debt'].div(bal_st['total_equity'])
     cf_st = sf_query(f"select * from {sf_db}.{sf_schema}.cash_flow_statement_annual where ticker = '{sel_tick}' order by year desc")
 
     # metrics for kpi cards
