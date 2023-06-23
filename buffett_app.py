@@ -149,10 +149,10 @@ with tab1:
     """)
     sel_tick = st.selectbox("Select a ticker to view", tick_list)
 
-    inc_st = sf_query(f"select * from financials.public.income_statement_annual where ticker = '{sel_tick}' order by year desc")
-    bal_st = sf_query(f"select * from financials.public.balance_sheet_annual where ticker = '{sel_tick}' order by year desc")
+    inc_st = sf_query(f"select * from {sf_db}.{sf_schema}.income_statement_annual where ticker = '{sel_tick}' order by year desc")
+    bal_st = sf_query(f"select * from {sf_db}.{sf_schema}.balance_sheet_annual where ticker = '{sel_tick}' order by year desc")
     bal_st['debt_to_equity'] = bal_st['totaldebt'].div(bal_st['totalequity'])
-    cf_st = sf_query(f"select * from financials.public.cash_flow_statement_annual where ticker = '{sel_tick}' order by year desc")
+    cf_st = sf_query(f"select * from {sf_db}.{sf_schema}.cash_flow_statement_annual where ticker = '{sel_tick}' order by year desc")
 
     # metrics for kpi cards
     def kpi_recent(df, metric, periods=2, unit=1000000000):
