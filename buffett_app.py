@@ -4,7 +4,7 @@ import pandas as pd
 import streamlit as st
 import altair as alt
 
-import prompts # see github prompts.py
+import prompts
 
 from langchain.llms import OpenAI
 from langchain.chains.conversation.memory import ConversationBufferMemory
@@ -12,7 +12,6 @@ from langchain.embeddings import OpenAIEmbeddings # for creating embeddings
 #from langchain.chains import ChatVectorDBChain # for chatting with the pdf
 from langchain.chains import ConversationalRetrievalChain
 from langchain.vectorstores import Pinecone # for the vectorization part
-
 from langchain.embeddings.openai import OpenAIEmbeddings
 from langchain.vectorstores import FAISS
 from langchain.prompts.prompt import PromptTemplate
@@ -20,7 +19,6 @@ from langchain.chains import (
     RetrievalQA
 )
 #from langchain.memory import ConversationBufferMemory
-
 import pinecone
 
 
@@ -29,37 +27,17 @@ sf_schema = st.secrets["sf_schema"]
 
 st.set_page_config(layout="wide")
 
-#@st.cache_resource
-def pinecone_init():
-    return pinecone.init(
-    api_key=st.secrets['pinecone_key'], 
-    environment=st.secrets['pinecone_env'] 
-    )
-
-#pinecone_init()
-#index_name = "buffett"
-#embeddings = OpenAIEmbeddings(openai_api_key=st.secrets["openai_key"])
-
-#docsearch = Pinecone.from_existing_index(index_name,embeddings)
-
-#pdf_qa = ConversationalRetrievalChain.from_llm(OpenAI(temperature=0.1, model_name="gpt-3.5-turbo",openai_api_key=st.secrets["openai_key"]),
-#                    docsearch, return_source_documents=True)
-
 @st.cache_data(ttl=600)
 def pull_financials(database, schema, statement, ticker):
     df = conn.query(f"select * from {database}.{schema}.{statement} where ticker = '{ticker}' order by year desc")
     df.columns = [col.lower() for col in df.columns]
     return df
 
-#@st.cache_data(ttl=600)
-#def pdf_question(query):
-#    return pdf_qa({"question": query, "chat_history": ""})
-
 tick_list = ['BRK.A','AAPL','PG','JNJ','MA','MCO','VZ','KO','AXP', 'BAC']
 fin_statement_list = ['income_statement','balance_sheet','cash_flow_statement']
 
 # create tabs
-tab1, tab2, tab3, tab4 = st.tabs(["Financial Data Exploration :chart_with_upwards_trend:", "Financial Statement Natural Language Querying :dollar:", 
+tab1, tab2, tab3, tab4 = st.tabs(["Financial Statement Natural Language Querying :dollar:", "Financial Data Exploration :chart_with_upwards_trend:",
                                   "Shareholder Letter Natural Language Querying :memo:", "Additional Details :notebook:"])
 
 with st.sidebar:
@@ -69,11 +47,10 @@ with st.sidebar:
     This app is powered by Snowflake :snowflake:, Streamlit, OpenAI, Langchain and Pinecone, leveraging Large Language Models (LLMs)
 
     Tabs:
-
-    ### 1: Financial Data Exploration :chart_with_upwards_trend:
-    Query Snowflake to view financials for various Warren Buffett investments
-    ### 2: Financial Statement Natural Language Querying :dollar:
+    ### 1: Financial Statement Natural Language Querying :dollar:
     Ask financial questions using natural language regarding the investments
+    ### 2: Financial Data Exploration :chart_with_upwards_trend:
+    Query Snowflake to view financials for various Warren Buffett investments
     ### 3: Shareholder Letter Natural Language Querying :memo:
     Ask various questions based on Warren Buffett's shareholder letters from 1977 through 2022  
 
@@ -89,76 +66,6 @@ with st.sidebar:
     9. Bank of America  
     """)
 
-
-with tab2:
-    conn = st.experimental_connection("snowpark")
-    st.markdown("""
-    # Financial Data Exploration :chart_with_upwards_trend:
-
-    View financial statement data for selected companies owned by Warren Buffet by querying Snowflake directly.
-
-    Available companies are identified in the selection drop down
-    """)
-    sel_tick = st.selectbox("Select a ticker to view", tick_list)
-
-    inc_st = pull_financials(sf_db, sf_schema, 'income_statement_annual', sel_tick)
-    bal_st = pull_financials(sf_db, sf_schema, 'balance_sheet_annual', sel_tick)
-    bal_st['debt_to_equity'] = bal_st['total_debt'].div(bal_st['total_equity'])
-    cf_st =  pull_financials(sf_db, sf_schema, 'cash_flow_statement_annual', sel_tick) 
-
-    # metrics for kpi cards
-    def kpi_recent(df, metric, periods=2, unit=1000000000):
-        return df.sort_values('year',ascending=False).head(periods)[metric]/unit
-    
-    # find the most recent 2 periods
-    net_inc = kpi_recent(inc_st, 'net_income')
-    net_inc_ratio = kpi_recent(inc_st, 'net_income_ratio', periods=2, unit=1)
-    fcf = kpi_recent(cf_st, 'free_cash_flow' )
-    debt_ratio = kpi_recent(bal_st, 'debt_to_equity', periods=2, unit=1)
-  
-    col1, col2 = st.columns((1,1))
-    # year cutoff
-    year_cutoff = 20
-
-    with col1:
-        #st.subheader("Net Income")
-        st.metric('Net Income', f'${net_inc[0]}B', delta=round(net_inc[0]-net_inc[1],2), delta_color="normal", help=None, label_visibility="visible")
-        st.altair_chart(alt.Chart(inc_st.head(year_cutoff)).mark_bar().encode(
-            x='year',
-            y='net_income'
-            ).properties(title="Net Income")
-        ) 
-        
-        #st.subheader("Net Profit Margin")
-        # netincome ratio
-        st.metric('Net Profit Margin', f'{round(net_inc_ratio[0]*100,2)}%', delta=round(net_inc_ratio[0]-net_inc_ratio[1],2), delta_color="normal", help=None, label_visibility="visible")
-        st.altair_chart(alt.Chart(inc_st.head(year_cutoff)).mark_bar().encode(
-            x='year',
-            y='net_income_ratio'
-            ).properties(title="Net Profit Margin")
-        ) 
-    
-    with col2:
-        #st.subheader("Free Cashflow")
-        # free cashflow
-        st.metric('Free Cashflow', f'${fcf[0]}B', delta=round(fcf[0]-fcf[1],2), delta_color="normal", help=None, label_visibility="visible")
-        st.altair_chart(alt.Chart(cf_st.head(year_cutoff)).mark_bar().encode(
-            x='year',
-            y='free_cash_flow'
-            ).properties(title="Free Cash Flow")
-        ) 
-
-        st.metric('Debt to Equity', f'{round(debt_ratio[0],2)}', delta=round(debt_ratio[0]-debt_ratio[1],2), delta_color="normal", help=None, label_visibility="visible")
-        st.altair_chart(alt.Chart(bal_st.head(year_cutoff)).mark_bar().encode(
-            x='year',
-            y='debt_to_equity'
-            ).properties(title="Debt to Equity")
-        ) 
-
-    sel_statement = st.selectbox("Select a statement to view", fin_statement_list)
-    fin_statement_dict = {'income_statement': inc_st, 'balance_sheet': bal_st, 'cash_flow_statement':cf_st}
-    st.dataframe(fin_statement_dict[sel_statement])
-
 with tab1:
     st.markdown("""
     # Natural Language Financials Querying :dollar:
@@ -167,8 +74,10 @@ with tab1:
 
     **Example questions to ask:**
 
-    - What was the net income in 1996 through 2000 for Proctor and Gamble?
-    - What was the revenue, depreciation, and net cash flows, and total liabilities for Apple for the last 5 years?
+    - What was the net income from 1996 through 2000 for Proctor and Gamble?
+    - What was the revenue, depreciation, and total liabilities for Apple for the last 5 years?
+    - What year had the highest net income?
+    - What has been the average for total assets and total liabilities over the last 3 years?
     """
     )
     conn = st.experimental_connection("snowpark")
@@ -191,6 +100,74 @@ with tab1:
             except:
                 st.write("Please try to improve your prompt or provide feedback on the error encountered")
 
+    with tab2:
+        conn = st.experimental_connection("snowpark")
+        st.markdown("""
+        # Financial Data Exploration :chart_with_upwards_trend:
+    
+        View financial statement data for selected companies owned by Warren Buffet by querying Snowflake directly.
+    
+        Available companies are identified in the selection drop down
+        """)
+        sel_tick = st.selectbox("Select a ticker to view", tick_list)
+    
+        inc_st = pull_financials(sf_db, sf_schema, 'income_statement_annual', sel_tick)
+        bal_st = pull_financials(sf_db, sf_schema, 'balance_sheet_annual', sel_tick)
+        bal_st['debt_to_equity'] = bal_st['total_debt'].div(bal_st['total_equity'])
+        cf_st =  pull_financials(sf_db, sf_schema, 'cash_flow_statement_annual', sel_tick) 
+    
+        # metrics for kpi cards
+        def kpi_recent(df, metric, periods=2, unit=1000000000):
+            return df.sort_values('year',ascending=False).head(periods)[metric]/unit
+        
+        # find the most recent 2 periods
+        net_inc = kpi_recent(inc_st, 'net_income')
+        net_inc_ratio = kpi_recent(inc_st, 'net_income_ratio', periods=2, unit=1)
+        fcf = kpi_recent(cf_st, 'free_cash_flow' )
+        debt_ratio = kpi_recent(bal_st, 'debt_to_equity', periods=2, unit=1)
+      
+        col1, col2 = st.columns((1,1))
+        # year cutoff
+        year_cutoff = 20
+    
+        with col1:
+            #st.subheader("Net Income")
+            st.metric('Net Income', f'${net_inc[0]}B', delta=round(net_inc[0]-net_inc[1],2), delta_color="normal", help=None, label_visibility="visible")
+            st.altair_chart(alt.Chart(inc_st.head(year_cutoff)).mark_bar().encode(
+                x='year',
+                y='net_income'
+                ).properties(title="Net Income")
+            ) 
+            
+            #st.subheader("Net Profit Margin")
+            # netincome ratio
+            st.metric('Net Profit Margin', f'{round(net_inc_ratio[0]*100,2)}%', delta=round(net_inc_ratio[0]-net_inc_ratio[1],2), delta_color="normal", help=None, label_visibility="visible")
+            st.altair_chart(alt.Chart(inc_st.head(year_cutoff)).mark_bar().encode(
+                x='year',
+                y='net_income_ratio'
+                ).properties(title="Net Profit Margin")
+            ) 
+        
+        with col2:
+            # free cashflow
+            st.metric('Free Cashflow', f'${fcf[0]}B', delta=round(fcf[0]-fcf[1],2), delta_color="normal", help=None, label_visibility="visible")
+            st.altair_chart(alt.Chart(cf_st.head(year_cutoff)).mark_bar().encode(
+                x='year',
+                y='free_cash_flow'
+                ).properties(title="Free Cash Flow")
+            ) 
+    
+            st.metric('Debt to Equity', f'{round(debt_ratio[0],2)}', delta=round(debt_ratio[0]-debt_ratio[1],2), delta_color="normal", help=None, label_visibility="visible")
+            st.altair_chart(alt.Chart(bal_st.head(year_cutoff)).mark_bar().encode(
+                x='year',
+                y='debt_to_equity'
+                ).properties(title="Debt to Equity")
+            ) 
+    
+        sel_statement = st.selectbox("Select a statement to view", fin_statement_list)
+        fin_statement_dict = {'income_statement': inc_st, 'balance_sheet': bal_st, 'cash_flow_statement':cf_st}
+        st.dataframe(fin_statement_dict[sel_statement])
+    
     with tab3:
         st.markdown("""
         # Shareholder Letter Natural Language Querying :memo:
@@ -228,6 +205,6 @@ with tab4:
     
     Additional Details:
 
-    - Tabs 2 and 3 can likely be consolidated leveraging Langchain "tools" with better prompting templates.
+    - Tabs 1 and 3 can likely be consolidated leveraging Langchain "tools" with better prompting templates.
 
     """)
