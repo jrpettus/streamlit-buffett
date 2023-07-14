@@ -9,7 +9,8 @@ import prompts # see github prompts.py
 from langchain.llms import OpenAI
 from langchain.chains.conversation.memory import ConversationBufferMemory
 from langchain.embeddings import OpenAIEmbeddings # for creating embeddings
-from langchain.chains import ChatVectorDBChain # for chatting with the pdf
+#from langchain.chains import ChatVectorDBChain # for chatting with the pdf
+from langchain.chains import ConversationalRetrievalChain
 from langchain.vectorstores import Pinecone # for the vectorization part
 
 from langchain.embeddings.openai import OpenAIEmbeddings
@@ -41,7 +42,7 @@ embeddings = OpenAIEmbeddings(openai_api_key=st.secrets["openai_key"])
 
 docsearch = Pinecone.from_existing_index(index_name,embeddings)
 
-pdf_qa = ChatVectorDBChain.from_llm(OpenAI(temperature=0.1, model_name="gpt-3.5-turbo",openai_api_key=st.secrets["openai_key"]),
+pdf_qa = ConversationalRetrievalChain.from_llm(OpenAI(temperature=0.1, model_name="gpt-3.5-turbo",openai_api_key=st.secrets["openai_key"]),
                     docsearch, return_source_documents=True)
 
 @st.cache_data(ttl=600)
