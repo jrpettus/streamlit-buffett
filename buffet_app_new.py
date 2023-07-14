@@ -36,14 +36,14 @@ def pinecone_init():
     environment=st.secrets['pinecone_env'] 
     )
 
-pinecone_init()
-index_name = "buffett"
-embeddings = OpenAIEmbeddings(openai_api_key=st.secrets["openai_key"])
+#pinecone_init()
+#index_name = "buffett"
+#embeddings = OpenAIEmbeddings(openai_api_key=st.secrets["openai_key"])
 
-docsearch = Pinecone.from_existing_index(index_name,embeddings)
+#docsearch = Pinecone.from_existing_index(index_name,embeddings)
 
-pdf_qa = ConversationalRetrievalChain.from_llm(OpenAI(temperature=0.1, model_name="gpt-3.5-turbo",openai_api_key=st.secrets["openai_key"]),
-                    docsearch, return_source_documents=True)
+#pdf_qa = ConversationalRetrievalChain.from_llm(OpenAI(temperature=0.1, model_name="gpt-3.5-turbo",openai_api_key=st.secrets["openai_key"]),
+#                    docsearch, return_source_documents=True)
 
 @st.cache_data(ttl=600)
 def pull_financials(database, schema, statement, ticker):
