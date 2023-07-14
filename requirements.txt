@@ -1,6 +1,7 @@
 altair
 snowflake-connector-python
 snowflake-sqlalchemy
+snowflake-snowpark-python
 numpy
 pandas
 matplotlib
