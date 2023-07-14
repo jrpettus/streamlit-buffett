@@ -28,12 +28,12 @@ from sqlalchemy import create_engine
 from sqlalchemy.dialects import registry
 registry.register('snowflake', 'snowflake.sqlalchemy', 'dialect')
 
-sf_user = st.secrets["user"]
-sf_pw = st.secrets["password"]
-sf_acct = st.secrets["account"]
-sf_db = st.secrets["database"]
-sf_schema = st.secrets["schema"]
-sf_wh = st.secrets["warehouse"]
+sf_user = st.secrets["sf_user"]
+sf_pw = st.secrets["sf_password"]
+sf_acct = st.secrets["sf_account"]
+sf_db = st.secrets["sf_database"]
+sf_schema = st.secrets["sf_schema"]
+sf_wh = st.secrets["sf_warehouse"]
 
 st.set_page_config(layout="wide")
 
