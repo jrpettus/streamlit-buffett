@@ -90,7 +90,7 @@ with st.sidebar:
     """)
 
 
-with tab1:
+with tab2:
     conn = st.experimental_connection("snowpark")
     st.markdown("""
     # Financial Data Exploration :chart_with_upwards_trend:
@@ -159,7 +159,7 @@ with tab1:
     fin_statement_dict = {'income_statement': inc_st, 'balance_sheet': bal_st, 'cash_flow_statement':cf_st}
     st.dataframe(fin_statement_dict[sel_statement])
 
-with tab2:
+with tab1:
     st.markdown("""
     # Natural Language Financials Querying :dollar:
     ### Leverage LLMs to translate natural language questions related to financial statements and turn those into direct Snowflake queries
