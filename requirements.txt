@@ -7,6 +7,7 @@ matplotlib
 seaborn
 openai
 streamlit_chat
-langchain
+langchain==0.0.130
 pinecone-client
 sqlalchemy
+faiss-cpu
