@@ -76,8 +76,8 @@ with tab1:
 
     - What was the net income from 1996 through 2000 for Proctor and Gamble?
     - What was the revenue, depreciation, and total liabilities for Apple for the last 5 years?
-    - What year had the highest net income?
-    - What has been the average for total assets and total liabilities over the last 3 years?
+    - Rank the companies in descending order based on their net income in 2022. Include the ticker and net income value
+    - What has been the average for total assets and total liabilities for each company over the last 3 years? List the top 3
     """
     )
     conn = st.experimental_connection("snowpark")
