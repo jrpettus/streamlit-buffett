@@ -107,9 +107,11 @@ with tab1:
             try:
                 output = prompts.execute_chain(str_input)
                 try:
-                    # if the output doesn' work we will try one additional attempt to fix it
-                    st.write(output)
-                    st.write(conn.query(output['result']))
+                    # if the output doesn't work we will try one additional attempt to fix it
+                    query_result = conn.query(output['result'])
+                    if len(query_result) > 1:
+                        st.write(output)
+                        st.write(query_result)
                 except:
                     st.write("The first attempt didn't pull what you were needing. Trying again...")
                     output = prompts.execute_chain(f'You need to fix the code. If the question is complex, consider using one or more CTE. Also, examine the DDL statements and try to correct this question/query: {output}')
