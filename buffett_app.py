@@ -198,7 +198,7 @@ with tab1:
                 try:
                     result = prompts.pdf_question(query)
                     st.write(result['answer'])
-                    st.write("Source Document Detail"
+                    st.write("Source Document Detail")
                     st.write(result['source_documents'][0])
                 except:
                     st.write("Please try to improve your prompt or provide feedback on the error encountered")
