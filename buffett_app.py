@@ -3,9 +3,7 @@ import numpy as np
 import pandas as pd
 import streamlit as st
 import altair as alt
-
 import prompts
-
 from langchain.llms import OpenAI
 from langchain.chains.conversation.memory import ConversationBufferMemory
 from langchain.embeddings import OpenAIEmbeddings # for creating embeddings
@@ -18,20 +16,30 @@ from langchain.prompts.prompt import PromptTemplate
 from langchain.chains import (
     RetrievalQA
 )
-#from langchain.memory import ConversationBufferMemory
-import pinecone
-
-
-sf_db = st.secrets["sf_database"]
-sf_schema = st.secrets["sf_schema"]
 
 st.set_page_config(layout="wide")
 
-@st.cache_data(ttl=600)
+# grab some of the secrets
+sf_db = st.secrets["sf_database"]
+sf_schema = st.secrets["sf_schema"]
+
+
+@st.cache_data()
 def pull_financials(database, schema, statement, ticker):
+    """
+    query to pull financial data from snowflake based on database, schema, statemen and ticker
+    """
     df = conn.query(f"select * from {database}.{schema}.{statement} where ticker = '{ticker}' order by year desc")
     df.columns = [col.lower() for col in df.columns]
     return df
+
+# metrics for kpi cards
+def kpi_recent(df, metric, periods=2, unit=1000000000):
+    """
+    filters a financial statement dataframe down to the most recent periods
+    df is the financial statement. Metric is the column to be used.
+    """
+    return df.sort_values('year',ascending=False).head(periods)[metric]/unit
 
 tick_list = ['BRK.A','AAPL','PG','JNJ','MA','MCO','VZ','KO','AXP', 'BAC']
 fin_statement_list = ['income_statement','balance_sheet','cash_flow_statement']
@@ -66,6 +74,9 @@ with st.sidebar:
     9. Bank of America  
     """)
 
+# establish snowpark connection
+conn = st.experimental_connection("snowpark")
+
 with tab1:
     st.markdown("""
     # Natural Language Financials Querying :dollar:
@@ -80,8 +91,8 @@ with tab1:
     - What has been the average for total assets and total liabilities for each company over the last 3 years? List the top 3
     """
     )
-    conn = st.experimental_connection("snowpark")
-    chain = prompts.load_chain()
+    
+    #chain = prompts.load_chain()
     str_input = st.text_input(label='What would you like to answer? (e.g. What was the revenue and net income for Apple for the last 5 years?)')
 
     if len(str_input) > 1:
@@ -90,6 +101,7 @@ with tab1:
             try:
                 output = prompts.execute_chain(str_input)
                 try:
+                    # if the output doesn' work we will try one additional attempt to fix it
                     st.write(output)
                     st.write(conn.query(output['result']))
                 except:
@@ -101,7 +113,6 @@ with tab1:
                 st.write("Please try to improve your prompt or provide feedback on the error encountered")
 
     with tab2:
-        conn = st.experimental_connection("snowpark")
         st.markdown("""
         # Financial Data Exploration :chart_with_upwards_trend:
     
@@ -115,10 +126,6 @@ with tab1:
         bal_st = pull_financials(sf_db, sf_schema, 'balance_sheet_annual', sel_tick)
         bal_st['debt_to_equity'] = bal_st['total_debt'].div(bal_st['total_equity'])
         cf_st =  pull_financials(sf_db, sf_schema, 'cash_flow_statement_annual', sel_tick) 
-    
-        # metrics for kpi cards
-        def kpi_recent(df, metric, periods=2, unit=1000000000):
-            return df.sort_values('year',ascending=False).head(periods)[metric]/unit
         
         # find the most recent 2 periods
         net_inc = kpi_recent(inc_st, 'net_income')
@@ -131,7 +138,7 @@ with tab1:
         year_cutoff = 20
     
         with col1:
-            #st.subheader("Net Income")
+            # Net Income metric
             st.metric('Net Income', f'${net_inc[0]}B', delta=round(net_inc[0]-net_inc[1],2), delta_color="normal", help=None, label_visibility="visible")
             st.altair_chart(alt.Chart(inc_st.head(year_cutoff)).mark_bar().encode(
                 x='year',
@@ -139,7 +146,6 @@ with tab1:
                 ).properties(title="Net Income")
             ) 
             
-            #st.subheader("Net Profit Margin")
             # netincome ratio
             st.metric('Net Profit Margin', f'{round(net_inc_ratio[0]*100,2)}%', delta=round(net_inc_ratio[0]-net_inc_ratio[1],2), delta_color="normal", help=None, label_visibility="visible")
             st.altair_chart(alt.Chart(inc_st.head(year_cutoff)).mark_bar().encode(
@@ -156,7 +162,8 @@ with tab1:
                 y='free_cash_flow'
                 ).properties(title="Free Cash Flow")
             ) 
-    
+
+            # debt to equity
             st.metric('Debt to Equity', f'{round(debt_ratio[0],2)}', delta=round(debt_ratio[0]-debt_ratio[1],2), delta_color="normal", help=None, label_visibility="visible")
             st.altair_chart(alt.Chart(bal_st.head(year_cutoff)).mark_bar().encode(
                 x='year',
@@ -185,18 +192,14 @@ with tab1:
         """
         )
 
-
         query = st.text_input("What would you like to ask Warren Buffett?")
         if len(query)>1:
             with st.spinner('Looking through lots of Shareholder letters now...'):
-                result = prompts.pdf_question(query)
                 try:
                     result = prompts.pdf_question(query)
-                    #print(result)
                     st.write(result['answer'])
+                    st.write("Source Document Detail"
                     st.write(result['source_documents'][0])
-                    #st.markdown("Additional details from the search result")
-                    #st.write(result)
                 except:
                     st.write("Please try to improve your prompt or provide feedback on the error encountered")
 
