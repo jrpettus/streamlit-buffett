@@ -108,13 +108,13 @@ with tab1:
                     # if the output doesn't work we will try one additional attempt to fix it
                     query_result = conn.query(output['result'])
                     if len(query_result) > 1:
-                        st.write(output)
                         st.write(query_result)
+                        st.write(output)
                 except:
                     st.write("The first attempt didn't pull what you were needing. Trying again...")
                     output = prompts.execute_chain(f'You need to fix the code. If the question is complex, consider using one or more CTE. Also, examine the DDL statements and try to correct this question/query: {output}')
-                    st.write(output)
                     st.write(conn.query(output['result']))
+                    st.write(output)
             except:
                 st.write("Please try to improve your prompt or provide feedback on the error encountered")
 
