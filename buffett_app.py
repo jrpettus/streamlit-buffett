@@ -76,6 +76,10 @@ with st.sidebar:
 
 # establish snowpark connection
 conn = st.experimental_connection("snowpark")
+# Reset the connection before using it if it isn't healthy
+# Note: is_healthy() isn't a real method and is just shown for example here.
+if not conn.is_healthy():
+    conn.reset()
 
 with tab1:
     st.markdown("""
