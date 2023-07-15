@@ -29,7 +29,7 @@ conn = st.experimental_connection("snowpark")
 # Reset the connection before using it if it isn't healthy
 # Note: is_healthy() isn't a real method and is just shown for example here.
 try:
-    query_test = conn.query('select net_income from {database}.{schema}.income_statement_annual limit 1'))
+    query_test = conn.query('select net_income from {database}.{schema}.income_statement_annual limit 1')
 except:
     conn.reset()
 
