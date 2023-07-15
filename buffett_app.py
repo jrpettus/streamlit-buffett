@@ -7,9 +7,12 @@ import prompts
 
 st.set_page_config(layout="wide")
 
-# grab some of the secrets
+# Variables
 sf_db = st.secrets["sf_database"]
 sf_schema = st.secrets["sf_schema"]
+tick_list = ['BRK.A','AAPL','PG','JNJ','MA','MCO','VZ','KO','AXP', 'BAC']
+fin_statement_list = ['income_statement','balance_sheet','cash_flow_statement']
+year_cutoff = 20 # year cutoff for financial statement plotting
 
 # establish snowpark connection
 conn = st.experimental_connection("snowpark")
@@ -48,8 +51,6 @@ def plot_financials(df, x, y, x_cutoff, title):
         ).properties(title=title)
     ) 
 
-tick_list = ['BRK.A','AAPL','PG','JNJ','MA','MCO','VZ','KO','AXP', 'BAC']
-fin_statement_list = ['income_statement','balance_sheet','cash_flow_statement']
 
 # create tabs
 tab1, tab2, tab3, tab4 = st.tabs(["Financial Statement Natural Language Querying :dollar:", "Financial Data Exploration :chart_with_upwards_trend:",
@@ -96,7 +97,6 @@ with tab1:
     """
     )
     
-    #chain = prompts.load_chain()
     str_input = st.text_input(label='What would you like to answer? (e.g. What was the revenue and net income for Apple for the last 5 years?)')
 
     if len(str_input) > 1:
@@ -118,7 +118,7 @@ with tab1:
             except:
                 st.write("Please try to improve your prompt or provide feedback on the error encountered")
 
-    with tab2:
+    with tab2: 
         st.markdown("""
         # Financial Data Exploration :chart_with_upwards_trend:
     
@@ -127,40 +127,38 @@ with tab1:
         Available companies are identified in the selection drop down
         """)
         sel_tick = st.selectbox("Select a ticker to view", tick_list)
-    
+
+        # pull the financial statements
+        # This whole section could be more efficient...
         inc_st = pull_financials(sf_db, sf_schema, 'income_statement_annual', sel_tick)
         bal_st = pull_financials(sf_db, sf_schema, 'balance_sheet_annual', sel_tick)
         bal_st['debt_to_equity'] = bal_st['total_debt'].div(bal_st['total_equity'])
         cf_st =  pull_financials(sf_db, sf_schema, 'cash_flow_statement_annual', sel_tick) 
-        
-        # find the most recent 2 periods
-        net_inc = kpi_recent(inc_st, 'net_income')
-        net_inc_ratio = kpi_recent(inc_st, 'net_income_ratio', periods=2, unit=1)
-        fcf = kpi_recent(cf_st, 'free_cash_flow' )
-        debt_ratio = kpi_recent(bal_st, 'debt_to_equity', periods=2, unit=1)
       
         col1, col2 = st.columns((1,1))
-        # year cutoff
-        year_cutoff = 20
-    
         with col1:
             # Net Income metric
+            net_inc = kpi_recent(inc_st, 'net_income')
             st.metric('Net Income', f'${net_inc[0]}B', delta=round(net_inc[0]-net_inc[1],2), delta_color="normal", help=None, label_visibility="visible")
             plot_financials(inc_st, 'year', 'net_income', year_cutoff, 'Net Income')
             
             # netincome ratio
+            net_inc_ratio = kpi_recent(inc_st, 'net_income_ratio', periods=2, unit=1)
             st.metric('Net Profit Margin', f'{round(net_inc_ratio[0]*100,2)}%', delta=round(net_inc_ratio[0]-net_inc_ratio[1],2), delta_color="normal", help=None, label_visibility="visible")
             plot_financials(inc_st, 'year', 'net_income_ratio', year_cutoff, 'Net Profit Margin')
         
         with col2:
             # free cashflow
+            fcf = kpi_recent(cf_st, 'free_cash_flow' )
             st.metric('Free Cashflow', f'${fcf[0]}B', delta=round(fcf[0]-fcf[1],2), delta_color="normal", help=None, label_visibility="visible")
             plot_financials(cf_st, 'year', 'free_cash_flow', year_cutoff, 'Free Cash Flow')
 
             # debt to equity
+            debt_ratio = kpi_recent(bal_st, 'debt_to_equity', periods=2, unit=1)
             st.metric('Debt to Equity', f'{round(debt_ratio[0],2)}', delta=round(debt_ratio[0]-debt_ratio[1],2), delta_color="normal", help=None, label_visibility="visible")
             plot_financials(bal_st, 'year', 'debt_to_equity', year_cutoff, 'Debt to Equity')
     
+        # enable a financial statment to be selected and viewed
         sel_statement = st.selectbox("Select a statement to view", fin_statement_list)
         fin_statement_dict = {'income_statement': inc_st, 'balance_sheet': bal_st, 'cash_flow_statement':cf_st}
         st.dataframe(fin_statement_dict[sel_statement])
