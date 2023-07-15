@@ -79,7 +79,9 @@ with st.sidebar:
     6. Moodys Corp
     7. Verizon
     8. American Express
-    9. Bank of America  
+    9. Bank of America
+
+    Produced by @randypettus
     """)
 
 with tab1:
