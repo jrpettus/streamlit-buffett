@@ -23,6 +23,13 @@ st.set_page_config(layout="wide")
 sf_db = st.secrets["sf_database"]
 sf_schema = st.secrets["sf_schema"]
 
+# establish snowpark connection
+conn = st.experimental_connection("snowpark")
+
+# Reset the connection before using it if it isn't healthy
+# Note: is_healthy() isn't a real method and is just shown for example here.
+if len(conn.query('select net_income from {database}.{schema}.income_statement_annual limit 1'))<1:
+    conn.reset()
 
 @st.cache_data()
 def pull_financials(database, schema, statement, ticker):
@@ -73,13 +80,6 @@ with st.sidebar:
     8. American Express
     9. Bank of America  
     """)
-
-# establish snowpark connection
-conn = st.experimental_connection("snowpark")
-# Reset the connection before using it if it isn't healthy
-# Note: is_healthy() isn't a real method and is just shown for example here.
-if not conn.is_healthy():
-    conn.reset()
 
 with tab1:
     st.markdown("""
