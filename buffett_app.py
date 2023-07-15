@@ -4,18 +4,6 @@ import pandas as pd
 import streamlit as st
 import altair as alt
 import prompts
-from langchain.llms import OpenAI
-from langchain.chains.conversation.memory import ConversationBufferMemory
-from langchain.embeddings import OpenAIEmbeddings # for creating embeddings
-#from langchain.chains import ChatVectorDBChain # for chatting with the pdf
-from langchain.chains import ConversationalRetrievalChain
-from langchain.vectorstores import Pinecone # for the vectorization part
-from langchain.embeddings.openai import OpenAIEmbeddings
-from langchain.vectorstores import FAISS
-from langchain.prompts.prompt import PromptTemplate
-from langchain.chains import (
-    RetrievalQA
-)
 
 st.set_page_config(layout="wide")
 
