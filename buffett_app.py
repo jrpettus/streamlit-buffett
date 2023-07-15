@@ -186,10 +186,10 @@ with tab1:
         if len(query)>1:
             with st.spinner('Looking through lots of Shareholder letters now...'):
                 try:
-                    st.caption(':blue[Warren's response] :sunglasses:')
+                    st.caption(":blue[Warren's response] :sunglasses:")
                     result = prompts.pdf_question(query)
                     st.write(result['answer'])
-                    st.caption(':blue[Source Document Details] :📄:')
+                    st.caption(":blue[Source Document Details] :📄:")
                     st.write(result['source_documents'][0])
                 except:
                     st.write("Please try to improve your prompt or provide feedback on the error encountered")
