@@ -15,7 +15,6 @@ sf_schema = st.secrets["sf_schema"]
 conn = st.experimental_connection("snowpark")
 
 # Reset the connection before using it if it isn't healthy
-# Note: is_healthy() isn't a real method and is just shown for example here.
 try:
     query_test = conn.query('select 1')
 except:
@@ -31,12 +30,23 @@ def pull_financials(database, schema, statement, ticker):
     return df
 
 # metrics for kpi cards
+@st.cache_data()
 def kpi_recent(df, metric, periods=2, unit=1000000000):
     """
     filters a financial statement dataframe down to the most recent periods
     df is the financial statement. Metric is the column to be used.
     """
     return df.sort_values('year',ascending=False).head(periods)[metric]/unit
+
+def plot_financials(df, x, y, x_cutoff, title):
+    """"
+    helper to plot the altair financial charts
+    """
+    return st.altair_chart(alt.Chart(df.head(x_cutoff)).mark_bar().encode(
+        x=x,
+        y=y
+        ).properties(title=title)
+    ) 
 
 tick_list = ['BRK.A','AAPL','PG','JNJ','MA','MCO','VZ','KO','AXP', 'BAC']
 fin_statement_list = ['income_statement','balance_sheet','cash_flow_statement']
@@ -136,36 +146,20 @@ with tab1:
         with col1:
             # Net Income metric
             st.metric('Net Income', f'${net_inc[0]}B', delta=round(net_inc[0]-net_inc[1],2), delta_color="normal", help=None, label_visibility="visible")
-            st.altair_chart(alt.Chart(inc_st.head(year_cutoff)).mark_bar().encode(
-                x='year',
-                y='net_income'
-                ).properties(title="Net Income")
-            ) 
+            plot_financials(inc_st, 'year', 'net_income', year_cutoff, 'Net Income')
             
             # netincome ratio
             st.metric('Net Profit Margin', f'{round(net_inc_ratio[0]*100,2)}%', delta=round(net_inc_ratio[0]-net_inc_ratio[1],2), delta_color="normal", help=None, label_visibility="visible")
-            st.altair_chart(alt.Chart(inc_st.head(year_cutoff)).mark_bar().encode(
-                x='year',
-                y='net_income_ratio'
-                ).properties(title="Net Profit Margin")
-            ) 
+            plot_financials(inc_st, 'year', 'net_income_ratio', year_cutoff, 'Net Profit Margin')
         
         with col2:
             # free cashflow
             st.metric('Free Cashflow', f'${fcf[0]}B', delta=round(fcf[0]-fcf[1],2), delta_color="normal", help=None, label_visibility="visible")
-            st.altair_chart(alt.Chart(cf_st.head(year_cutoff)).mark_bar().encode(
-                x='year',
-                y='free_cash_flow'
-                ).properties(title="Free Cash Flow")
-            ) 
+            plot_financials(cf_st, 'year', 'free_cash_flow', year_cutoff, 'Free Cash Flow')
 
             # debt to equity
             st.metric('Debt to Equity', f'{round(debt_ratio[0],2)}', delta=round(debt_ratio[0]-debt_ratio[1],2), delta_color="normal", help=None, label_visibility="visible")
-            st.altair_chart(alt.Chart(bal_st.head(year_cutoff)).mark_bar().encode(
-                x='year',
-                y='debt_to_equity'
-                ).properties(title="Debt to Equity")
-            ) 
+            plot_financials(bal_st, 'year', 'debt_to_equity', year_cutoff, 'Debt to Equity')
     
         sel_statement = st.selectbox("Select a statement to view", fin_statement_list)
         fin_statement_dict = {'income_statement': inc_st, 'balance_sheet': bal_st, 'cash_flow_statement':cf_st}
@@ -194,7 +188,7 @@ with tab1:
                 try:
                     result = prompts.pdf_question(query)
                     st.write(result['answer'])
-                    st.write("Source Document Detail")
+                    st.write("Source Document Details:")
                     st.write(result['source_documents'][0])
                 except:
                     st.write("Please try to improve your prompt or provide feedback on the error encountered")
