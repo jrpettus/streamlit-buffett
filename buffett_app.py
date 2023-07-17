@@ -175,7 +175,7 @@ with tab1:
 
         **Example questions to ask:**
 
-        - Why has Apple been a good investment? What specific reasons has it increased in value?
+        - What was your gain in net worth in 1984?
         - What are some of your biggest lessons learned?
         - What do you look for in managers?
         - Are markets efficient? Give a specific example that you have used in a letter.
