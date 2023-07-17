@@ -5,7 +5,7 @@ from langchain.vectorstores import FAISS
 import streamlit as st
 
 # load the ddl file
-loader = TextLoader('sql/ddls.sql')
+loader = TextLoader('load/ddls.sql')
 data = loader.load()
 
 # split the text
