@@ -25,7 +25,7 @@ statements = ['INCOME_STATEMENT_ANNUAL','BALANCE_SHEET_ANNUAL','CASH_FLOW_STATEM
 
 # Load data into snowflake by looping through the csv files
 for statement in statements:
-    path = f'./financials/{statement.lower()}/' 
+    path = f'./load/financials/{statement.lower()}/' 
     files = glob.glob(os.path.join(path, "*.csv"))
     df = pd.concat((pd.read_csv(f) for f in files))
     print(statement)
