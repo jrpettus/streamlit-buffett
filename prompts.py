@@ -1,11 +1,10 @@
 import streamlit as st
 import openai
+from langchain.chat_models import ChatOpenAI
 from langchain.embeddings.openai import OpenAIEmbeddings
 from langchain.vectorstores import FAISS, Pinecone
 from langchain.prompts.prompt import PromptTemplate
-from langchain.chains import (
-    RetrievalQA
-)
+from langchain.chains import RetrievalQA
 from langchain.llms import OpenAI
 from langchain.memory import ConversationBufferMemory
 from langchain.chains import ChatVectorDBChain # for chatting with the pdf
@@ -42,13 +41,39 @@ Context: {context}
 SQL: ```sql ``` \n
  
 """
-QA_PROMPT = PromptTemplate(template=TEMPLATE, input_variables=["question", "context"])
+QA_PROMPT = PromptTemplate(input_variables=["question", "context"], template=TEMPLATE, )
 
-chain_type_kwargs = {"prompt": QA_PROMPT,
-                     "memory": ConversationBufferMemory(
-                        #memory_key="history",
-                        input_key="question"), 
-                    }
+llm = ChatOpenAI(
+    model_name="gpt-3.5-turbo",
+    temperature=0.1,
+    max_tokens=1000, 
+    openai_api_key=st.secrets["openai_key"]
+)
+
+embeddings = OpenAIEmbeddings(openai_api_key=st.secrets["openai_key"])
+vectorstore = FAISS.load_local("faiss_index", embeddings)
+
+qa_chain = RetrievalQA.from_chain_type(llm,
+                                       retriever=vectorstore.as_retriever(),
+                                       chain_type_kwargs={"prompt": QA_PROMPT})
+
+def execute_chain(query):
+    '''
+    Execute the chain and handle error recovery.
+    
+    Args:
+        query (str): The query to be executed
+
+    Returns:
+        chain_result (dict): The result of the chain execution
+
+    '''
+    chain_result = None
+    try:
+        chain_result = qa_chain({"query": question})
+    except Exception as error:
+        print("error", error)
+    return chain_result['result']
 
 
 def get_chain(vectorstore):
@@ -56,16 +81,8 @@ def get_chain(vectorstore):
     pull the chain for enabling chat with the vector database.
     """
     
-    streaming_llm = OpenAI(
-        model_name='gpt-3.5-turbo',
-        streaming=False, 
-        max_tokens=1000,
-        temperature=0.1,
-        openai_api_key=st.secrets["openai_key"]
-    )
-    
     chain = RetrievalQA.from_chain_type(
-                llm=streaming_llm,
+                llm=lm,
                 chain_type="stuff",
                 retriever=vectorstore.as_retriever(),
                 chain_type_kwargs=chain_type_kwargs,
@@ -85,8 +102,9 @@ def load_chain():
     vectorstore = FAISS.load_local("faiss_index", embeddings)
     return get_chain(vectorstore)
 
-chain = load_chain()
+# chain = load_chain()
 
+"""
 def execute_chain(query):
     '''
     Execute the chain and handle error recovery.
@@ -104,6 +122,7 @@ def execute_chain(query):
     except Exception as error:
         print("error", error)
     return chain_result
+"""
 
 
 # pinecone interactions
