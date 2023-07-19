@@ -8,7 +8,7 @@ from langchain.chains import RetrievalQA
 from langchain.llms import OpenAI
 from langchain.memory import ConversationBufferMemory
 from langchain.chains import ChatVectorDBChain # for chatting with the pdf
-from langchain.chain import ConversationalRetrievalChain
+#from langchain.chain import ConversationalRetrievalChain
 import pinecone
 
 
