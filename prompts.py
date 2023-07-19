@@ -80,9 +80,8 @@ def get_chain(llm, retriever, return_source_documents, doc_prompt):
     retriever will be either the get_faiss or get_pinecone
     """
     return RetrievalQA.from_chain_type(llm, 
-                            retriever=docsearch.as_retriever(),
-                            return_source_documents=return_source_documents,
-                           )
+                                       retriever=docsearch.as_retriever(),
+                                       return_source_documents=return_source_documents)
 
 def execute_chain(qa_chain, question):
     result = qa_chain({"query": question})
@@ -90,21 +89,18 @@ def execute_chain(qa_chain, question):
 
 def fs_chain():
     docsearch = get_faiss()
-    qa_chain =  RetrievalQA.from_chain_type(llm, 
-                            retriever=docsearch.as_retriever(),
-                            chain_type_kwargs={"prompt": FS_PROMPT}
-                                           )
+    qa_chain = RetrievalQA.from_chain_type(llm, 
+                                           retriever=docsearch.as_retriever(),
+                                           chain_type_kwargs={"prompt": FS_PROMPT})
     return qa_chain({"query": question})
 
 def letter_chain():
     docsearch = get_pinecone()
-    qa_chain =  RetrievalQA.from_chain_type(llm, 
-                            retriever=docsearch.as_retriever(),
-                            chain_type_kwargs={"prompt": LETTER_PROMPT})
+    qa_chain = RetrievalQA.from_chain_type(llm, 
+                                            retriever=docsearch.as_retriever(),
+                                           chain_type_kwargs={"prompt": LETTER_PROMPT})
                            )
     return qa_chain({"query": question})
-
-
 
 def execute_chain(qa_chain, question):
     result = qa_chain({"query": question})
