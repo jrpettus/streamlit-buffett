@@ -101,6 +101,11 @@ def letter_chain(question):
                                           )
     return qa_chain({"query": question})
 
+def letter_qa(query, temperature=.1,model_name="gpt-3.5-turbo"):
+    pdf_qa = ChatVectorDBChain.from_llm(OpenAI(temperature=temperature, model_name=model_name, openai_api_key=st.secrets["openai_key"]),
+                    pinecone_search(), return_source_documents=True)
+    return pdf_qa({"question": query, "chat_history": ""})
+
 def execute_chain(qa_chain, question):
     result = qa_chain({"query": question})
     return result
@@ -228,7 +233,9 @@ def pinecone_search():
     docsearch = Pinecone.from_existing_index(index_name,embeddings)
     return docsearch
 
+"""
 def pdf_question(query, temperature=.1,model_name="gpt-3.5-turbo"):
     pdf_qa = ChatVectorDBChain.from_llm(OpenAI(temperature=temperature, model_name=model_name, openai_api_key=st.secrets["openai_key"]),
                     pinecone_search(), return_source_documents=True)
     return pdf_qa({"question": query, "chat_history": ""})
+"""
