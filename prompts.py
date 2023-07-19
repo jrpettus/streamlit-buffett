@@ -41,7 +41,74 @@ Context: {context}
 SQL: ```sql ``` \n
  
 """
-QA_PROMPT = PromptTemplate(input_variables=["question", "context"], template=FS_TEMPLATE, )
+FS_PROMPT = PromptTemplate(input_variables=["question", "context"], template=FS_TEMPLATE, )
+
+LETTER_TEMPLATE = """ You are tasked with retreiving questions regarding Warren Buffett from his shareholder letters.
+Provide an answer based on this retreival, and if you can't find anything relevant, just say "I'm sorry, I couldn't find that."
+{context}
+Question: {question}
+Anwer:
+ 
+"""
+LETTER_PROMPT = PromptTemplate(input_variables=["question", "context"], template=LETTER_TEMPLATE, )
+
+llm = ChatOpenAI(
+    model_name="gpt-3.5-turbo",
+    temperature=0.1,
+    max_tokens=1000, 
+    openai_api_key=st.secrets["openai_key"]
+)
+
+def get_faiss():
+    " get the loaded FAISS embeddings"
+    embeddings = OpenAIEmbeddings(openai_api_key=st.secrets["openai_key"])
+    return FAISS.load_local("faiss_index", embeddings)
+
+def get_pinecone():
+    " get the pinecone embeddings"
+    pinecone.init(
+        api_key=st.secrets['pinecone_key'], 
+        environment=st.secrets['pinecone_env'] 
+        )
+    
+    index_name = "buffett"
+    embeddings = OpenAIEmbeddings(openai_api_key=st.secrets["openai_key"])
+    return Pinecone.from_existing_index(index_name,embeddings)
+
+def get_chain(llm, retriever, return_source_documents, doc_prompt):
+    """
+    retriever will be either the get_faiss or get_pinecone
+    """
+    return RetrievalQA.from_chain_type(llm, 
+                            retriever=docsearch.as_retriever(),
+                            return_source_documents=return_source_documents,
+                           )
+
+def execute_chain(qa_chain, question):
+    result = qa_chain({"query": question})
+    return result
+
+def fs_chain():
+    docsearch = get_faiss()
+    qa_chain =  RetrievalQA.from_chain_type(llm, 
+                            retriever=docsearch.as_retriever(),
+                            chain_type_kwargs={"prompt": FS_PROMPT})
+                           )
+    return qa_chain({"query": question})
+
+def letter_chain():
+    docsearch = get_pinecone()
+    qa_chain =  RetrievalQA.from_chain_type(llm, 
+                            retriever=docsearch.as_retriever(),
+                            chain_type_kwargs={"prompt": LETTER_PROMPT})
+                           )
+    return qa_chain({"query": question})
+
+
+
+def execute_chain(qa_chain, question):
+    result = qa_chain({"query": question})
+    return result
 
 llm = ChatOpenAI(
     model_name="gpt-3.5-turbo",
@@ -54,13 +121,16 @@ embeddings = OpenAIEmbeddings(openai_api_key=st.secrets["openai_key"])
 
 vectorstore = FAISS.load_local("faiss_index", embeddings)
 
-qa_chain = RetrievalQA.from_chain_type(llm,
+fs_chain = RetrievalQA.from_chain_type(llm,
                                        retriever=vectorstore.as_retriever(),
                                        chain_type_kwargs={"prompt": QA_PROMPT})
 
-def execute_chain(question):
+def execute_chain(qa_chain, question):
  result = qa_chain({"query": question})
  return result
+
+
+
 
 pinecone.init(
     api_key=st.secrets['pinecone_key'], 
@@ -72,10 +142,11 @@ embeddings = OpenAIEmbeddings(openai_api_key=st.secrets["openai_key"])
 docsearch = Pinecone.from_existing_index(index_name,embeddings)
 
 
+
 letter_chain = RetrievalQA.from_chain_type(llm,
                                        retriever=docsearch.as_retriever(),
                                        return_source_documents=True
-                                       #chain_type_kwargs={"prompt": QA_PROMPT}
+                                       chain_type_kwargs={"prompt": LETTER_PROMPT}
                                       )
 
 """
