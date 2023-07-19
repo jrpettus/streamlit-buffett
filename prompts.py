@@ -57,6 +57,11 @@ qa_chain = RetrievalQA.from_chain_type(llm,
                                        retriever=vectorstore.as_retriever(),
                                        chain_type_kwargs={"prompt": QA_PROMPT})
 
+def execute_chain(question)
+ result = qa_chain({"query": question})
+ return result["result"]
+
+"""
 def execute_chain(query):
     '''
     Execute the chain and handle error recovery.
@@ -74,7 +79,7 @@ def execute_chain(query):
     except Exception as error:
         print("error", error)
     return chain_result['result']
-
+"""
 
 def get_chain(vectorstore):
     """
