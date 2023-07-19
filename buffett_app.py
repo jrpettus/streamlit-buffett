@@ -192,7 +192,7 @@ with tab1:
                 try:
                     st.caption(":blue[Warren's response] :sunglasses:")
                     result = prompts.letter_chain(query)
-                    st.write(result['answer'])
+                    st.write(result['result'])
                     st.caption(":blue[Source Documents Used] :📄:")
                     st.write(result['source_documents'])
                 except:
