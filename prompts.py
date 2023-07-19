@@ -10,6 +10,7 @@ from langchain.memory import ConversationBufferMemory
 from langchain.chains import ChatVectorDBChain # for chatting with the pdf
 import pinecone
 
+
 FS_TEMPLATE = """ You are an expert SQL developer querying about financials statements. You have to write sql code in a Snowflake database based on the following question. 
 display the sql code in the SQL code format (do not assume anything if the column is not available, do not make up code). 
 ALSO if you are asked to FIX the sql code, then look what was the error and try to fix that by searching the schema definition.
