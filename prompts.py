@@ -57,7 +57,7 @@ qa_chain = RetrievalQA.from_chain_type(llm,
                                        retriever=vectorstore.as_retriever(),
                                        chain_type_kwargs={"prompt": QA_PROMPT})
 
-def execute_chain(question)
+def execute_chain(question):
  result = qa_chain({"query": question})
  return result["result"]
 
