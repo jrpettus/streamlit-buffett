@@ -6,9 +6,6 @@ from langchain.vectorstores import FAISS, Pinecone
 from langchain.prompts.prompt import PromptTemplate
 from langchain.chains import RetrievalQA
 from langchain.llms import OpenAI
-from langchain.memory import ConversationBufferMemory
-from langchain.chains import ChatVectorDBChain # for chatting with the pdf
-#from langchain.chain import ConversationalRetrievalChain
 import pinecone
 
 
@@ -75,19 +72,10 @@ def get_pinecone():
     embeddings = OpenAIEmbeddings(openai_api_key=st.secrets["openai_key"])
     return Pinecone.from_existing_index(index_name,embeddings)
 
-def get_chain(llm, retriever, return_source_documents, doc_prompt):
-    """
-    retriever will be either the get_faiss or get_pinecone
-    """
-    return RetrievalQA.from_chain_type(llm, 
-                                       retriever=docsearch.as_retriever(),
-                                       return_source_documents=return_source_documents)
-
-def execute_chain(qa_chain, question):
-    result = qa_chain({"query": question})
-    return result
-
 def fs_chain(question):
+    """
+    returns a question answer chain for faiss vectordb
+    """
     docsearch = get_faiss()
     qa_chain = RetrievalQA.from_chain_type(llm, 
                                            retriever=docsearch.as_retriever(),
@@ -95,6 +83,9 @@ def fs_chain(question):
     return qa_chain({"query": question})
 
 def letter_chain(question):
+     """
+    returns a question answer chain for pinecone vectordb
+    """
     docsearch = get_pinecone()
     retreiver = docsearch.as_retriever(#
         #search_type="similarity", #"similarity", "mmr"
@@ -109,140 +100,10 @@ def letter_chain(question):
     return qa_chain({"query": question})
 
 def letter_qa(query, temperature=.1,model_name="gpt-3.5-turbo"):
+    """
+    this method was deprecated but seems to be more efficient from a token perspective
+    """
     pdf_qa = ChatVectorDBChain.from_llm(OpenAI(temperature=temperature, model_name=model_name, openai_api_key=st.secrets["openai_key"]),
                     pinecone_search(), return_source_documents=True)
     return pdf_qa({"question": query, "chat_history": ""})
 
-def execute_chain(qa_chain, question):
-    result = qa_chain({"query": question})
-    return result
-
-"""
-
-embeddings = OpenAIEmbeddings(openai_api_key=st.secrets["openai_key"])
-
-vectorstore = FAISS.load_local("faiss_index", embeddings)
-
-fs_full_chain = RetrievalQA.from_chain_type(llm,
-                                       retriever=vectorstore.as_retriever(),
-                                       chain_type_kwargs={"prompt": QA_PROMPT})
-                                    
-"""
-
-def execute_chain(qa_chain, question):
- result = qa_chain({"query": question})
- return result
-
-
-
-"""
-pinecone.init(
-    api_key=st.secrets['pinecone_key'], 
-    environment=st.secrets['pinecone_env'] 
-    )
-
-index_name = "buffett"
-embeddings = OpenAIEmbeddings(openai_api_key=st.secrets["openai_key"])
-docsearch = Pinecone.from_existing_index(index_name,embeddings)
-
-"""
-"""
-letter_chain = RetrievalQA.from_chain_type(llm,
-                                       retriever=docsearch.as_retriever(),
-                                       return_source_documents=True,
-                                       chain_type_kwargs={"prompt": LETTER_PROMPT}
-                                      )
-
-"""
-
-"""
-def execute_chain(query):
-    '''
-    Execute the chain and handle error recovery.
-    
-    Args:
-        query (str): The query to be executed
-
-    Returns:
-        chain_result (dict): The result of the chain execution
-
-    '''
-    chain_result = None
-    try:
-        chain_result = qa_chain({"query": question})
-    except Exception as error:
-        print("error", error)
-    return chain_result['result']
-"""
-
-def get_chain(vectorstore):
-    """
-    pull the chain for enabling chat with the vector database.
-    """
-    
-    chain = RetrievalQA.from_chain_type(
-                llm=lm,
-                chain_type="stuff",
-                retriever=vectorstore.as_retriever(),
-                chain_type_kwargs=chain_type_kwargs,
-                )
-    return chain
-
-def load_chain():
-    '''
-    Load the chain from the local file system
-
-    Returns:
-        chain (Chain): The chain object
-
-    '''
-
-    embeddings = OpenAIEmbeddings(openai_api_key=st.secrets["openai_key"])
-    vectorstore = FAISS.load_local("faiss_index", embeddings)
-    return get_chain(vectorstore)
-
-# chain = load_chain()
-
-"""
-def execute_chain(query):
-    '''
-    Execute the chain and handle error recovery.
-    
-    Args:
-        query (str): The query to be executed
-
-    Returns:
-        chain_result (dict): The result of the chain execution
-
-    '''
-    chain_result = None
-    try:
-        chain_result = chain(query)
-    except Exception as error:
-        print("error", error)
-    return chain_result
-"""
-
-
-# pinecone interactions
-
-def pinecone_search():
-    """
-    perform a doc search in pinecone
-    """
-    pinecone.init(
-        api_key=st.secrets['pinecone_key'], 
-        environment=st.secrets['pinecone_env'] 
-        )
-
-    index_name = "buffett"
-    embeddings = OpenAIEmbeddings(openai_api_key=st.secrets["openai_key"])
-    docsearch = Pinecone.from_existing_index(index_name,embeddings)
-    return docsearch
-
-"""
-def pdf_question(query, temperature=.1,model_name="gpt-3.5-turbo"):
-    pdf_qa = ChatVectorDBChain.from_llm(OpenAI(temperature=temperature, model_name=model_name, openai_api_key=st.secrets["openai_key"]),
-                    pinecone_search(), return_source_documents=True)
-    return pdf_qa({"question": query, "chat_history": ""})
-"""
