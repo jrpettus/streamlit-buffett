@@ -103,8 +103,8 @@ with tab1:
 
     if len(str_input) > 1:
         with st.spinner('Looking up your question in Snowflake now...'):
-            output = prompts.fs_chain(str_input)
-            st.write(output)
+            #output = prompts.fs_chain(str_input)
+            #st.write(output)
             try:
                 output = prompts.fs_chain(str_input)
                 st.write(output)
@@ -187,16 +187,16 @@ with tab1:
         query = st.text_input("What would you like to ask Warren Buffett?")
         if len(query)>1:
             with st.spinner('Looking through lots of Shareholder letters now...'):
-                st.write(prompts.letter_chain(query))
-                st.write(prompts.letter_qa(query))
-                """try:
+                #st.write(prompts.letter_chain(query))
+                #st.write(prompts.letter_qa(query))
+                try:
                     st.caption(":blue[Warren's response] :sunglasses:")
                     result = prompts.letter_chain(query)
                     st.write(result['answer'])
                     st.caption(":blue[Source Documents Used] :📄:")
                     st.write(result['source_documents'])
                 except:
-                    st.write("Please try to improve your prompt or provide feedback on the error encountered")
+                    st.write("Please try to improve your question")
                 """
 
 with tab4:
