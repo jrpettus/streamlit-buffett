@@ -136,12 +136,14 @@ embeddings = OpenAIEmbeddings(openai_api_key=st.secrets["openai_key"])
 docsearch = Pinecone.from_existing_index(index_name,embeddings)
 
 
-
+"""
 letter_chain = RetrievalQA.from_chain_type(llm,
                                        retriever=docsearch.as_retriever(),
-                                       return_source_documents=True
+                                       return_source_documents=True,
                                        chain_type_kwargs={"prompt": LETTER_PROMPT}
                                       )
+
+"""
 
 """
 def execute_chain(query):
