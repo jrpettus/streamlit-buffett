@@ -97,7 +97,8 @@ def letter_chain(question):
     docsearch = get_pinecone()
     qa_chain = RetrievalQA.from_chain_type(llm, 
                                             retriever=docsearch.as_retriever(),
-                                           chain_type_kwargs={"prompt": LETTER_PROMPT})
+                                           #chain_type_kwargs={"prompt": LETTER_PROMPT}
+                                          )
     return qa_chain({"query": question})
 
 def execute_chain(qa_chain, question):
