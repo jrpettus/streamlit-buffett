@@ -8,6 +8,7 @@ from langchain.chains import RetrievalQA
 from langchain.llms import OpenAI
 from langchain.memory import ConversationBufferMemory
 from langchain.chains import ChatVectorDBChain # for chatting with the pdf
+from langchain.chain import ConversationalRetrievalChain
 import pinecone
 
 
@@ -96,11 +97,13 @@ def fs_chain(question):
 def letter_chain(question):
     docsearch = get_pinecone()
     retreiver = docsearch.as_retriever(#
-        #search_type="similarity", 
+        #search_type="mmr" #"similarity", 
         search_kwargs={"k":2}
     )
     qa_chain = RetrievalQA.from_chain_type(llm, 
                                             retriever=retreiver,
+                                           chain_type="stuff",
+                                           return_source_documents=True,
                                            #chain_type_kwargs={"prompt": LETTER_PROMPT}
                                           )
     return qa_chain({"query": question})
