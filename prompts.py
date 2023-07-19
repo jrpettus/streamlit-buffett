@@ -102,7 +102,7 @@ def letter_chain(question):
     )
     qa_chain = RetrievalQA.from_chain_type(llm, 
                                             retriever=retreiver,
-                                           chain_type="map_reduce", #"stuff", "refine", "map_rerank"
+                                           chain_type="refine", #"stuff", "map_reduce","refine", "map_rerank"
                                            return_source_documents=True,
                                            #chain_type_kwargs={"prompt": LETTER_PROMPT}
                                           )
