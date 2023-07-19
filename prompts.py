@@ -104,12 +104,7 @@ def execute_chain(qa_chain, question):
     result = qa_chain({"query": question})
     return result
 
-llm = ChatOpenAI(
-    model_name="gpt-3.5-turbo",
-    temperature=0.1,
-    max_tokens=1000, 
-    openai_api_key=st.secrets["openai_key"]
-)
+"""
 
 embeddings = OpenAIEmbeddings(openai_api_key=st.secrets["openai_key"])
 
@@ -118,6 +113,8 @@ vectorstore = FAISS.load_local("faiss_index", embeddings)
 fs_full_chain = RetrievalQA.from_chain_type(llm,
                                        retriever=vectorstore.as_retriever(),
                                        chain_type_kwargs={"prompt": QA_PROMPT})
+                                    
+"""
 
 def execute_chain(qa_chain, question):
  result = qa_chain({"query": question})
@@ -125,7 +122,7 @@ def execute_chain(qa_chain, question):
 
 
 
-
+"""
 pinecone.init(
     api_key=st.secrets['pinecone_key'], 
     environment=st.secrets['pinecone_env'] 
@@ -135,7 +132,7 @@ index_name = "buffett"
 embeddings = OpenAIEmbeddings(openai_api_key=st.secrets["openai_key"])
 docsearch = Pinecone.from_existing_index(index_name,embeddings)
 
-
+"""
 """
 letter_chain = RetrievalQA.from_chain_type(llm,
                                        retriever=docsearch.as_retriever(),
