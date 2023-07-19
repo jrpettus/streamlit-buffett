@@ -98,7 +98,6 @@ def letter_chain():
     qa_chain = RetrievalQA.from_chain_type(llm, 
                                             retriever=docsearch.as_retriever(),
                                            chain_type_kwargs={"prompt": LETTER_PROMPT})
-                           )
     return qa_chain({"query": question})
 
 def execute_chain(qa_chain, question):
@@ -116,7 +115,7 @@ embeddings = OpenAIEmbeddings(openai_api_key=st.secrets["openai_key"])
 
 vectorstore = FAISS.load_local("faiss_index", embeddings)
 
-fs_chain = RetrievalQA.from_chain_type(llm,
+fs_full_chain = RetrievalQA.from_chain_type(llm,
                                        retriever=vectorstore.as_retriever(),
                                        chain_type_kwargs={"prompt": QA_PROMPT})
 
