@@ -83,9 +83,10 @@ def fs_chain(question):
     return qa_chain({"query": question})
 
 def letter_chain(question):
-     """
+    """
     returns a question answer chain for pinecone vectordb
     """
+ 
     docsearch = get_pinecone()
     retreiver = docsearch.as_retriever(#
         #search_type="similarity", #"similarity", "mmr"
