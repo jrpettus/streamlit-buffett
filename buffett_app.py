@@ -197,7 +197,6 @@ with tab1:
                     st.write(result['source_documents'])
                 except:
                     st.write("Please try to improve your question")
-                """
 
 with tab4:
     st.markdown("""
