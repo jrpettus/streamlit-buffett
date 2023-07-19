@@ -76,6 +76,7 @@ def fs_chain(question):
     """
     returns a question answer chain for faiss vectordb
     """
+
     docsearch = get_faiss()
     qa_chain = RetrievalQA.from_chain_type(llm, 
                                            retriever=docsearch.as_retriever(),
@@ -86,7 +87,7 @@ def letter_chain(question):
     """
     returns a question answer chain for pinecone vectordb
     """
- 
+    
     docsearch = get_pinecone()
     retreiver = docsearch.as_retriever(#
         #search_type="similarity", #"similarity", "mmr"
