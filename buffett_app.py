@@ -106,6 +106,7 @@ with tab1:
             prompts.execute_chain(str_input)
             try:
                 output = prompts.execute_chain(str_input)
+                st.write(output)
                 try:
                     # if the output doesn't work we will try one additional attempt to fix it
                     query_result = conn.query(output['result'])
