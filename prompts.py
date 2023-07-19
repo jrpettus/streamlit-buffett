@@ -59,7 +59,7 @@ qa_chain = RetrievalQA.from_chain_type(llm,
 
 def execute_chain(question):
  result = qa_chain({"query": question})
- return result["result"]
+ return result
 
 """
 def execute_chain(query):
