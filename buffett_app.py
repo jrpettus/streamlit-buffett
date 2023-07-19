@@ -103,7 +103,8 @@ with tab1:
 
     if len(str_input) > 1:
         with st.spinner('Looking up your question in Snowflake now...'):
-            prompts.fs_chain(str_input)
+            output = prompts.fs_chain(str_input)
+            st.write(output)
             try:
                 output = prompts.fs_chain(str_input)
                 st.write(output)
