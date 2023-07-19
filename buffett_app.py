@@ -188,7 +188,7 @@ with tab1:
         if len(query)>1:
             with st.spinner('Looking through lots of Shareholder letters now...'):
                 #st.write(prompts.letter_chain(query))
-                st.write(prompts.letter_qa(query)
+                st.write(prompts.letter_qa(query))
                 try:
                     st.caption(":blue[Warren's response] :sunglasses:")
                     result = prompts.letter_chain(query)
