@@ -97,12 +97,12 @@ def fs_chain(question):
 def letter_chain(question):
     docsearch = get_pinecone()
     retreiver = docsearch.as_retriever(#
-        #search_type="mmr" #"similarity", 
-        search_kwargs={"k":2}
+        #search_type="similarity", #"similarity", "mmr"
+        search_kwargs={"k":3}
     )
     qa_chain = RetrievalQA.from_chain_type(llm, 
                                             retriever=retreiver,
-                                           chain_type="refine", #"stuff", "map_reduce","refine", "map_rerank"
+                                           chain_type="stuff", #"stuff", "map_reduce","refine", "map_rerank"
                                            return_source_documents=True,
                                            #chain_type_kwargs={"prompt": LETTER_PROMPT}
                                           )
