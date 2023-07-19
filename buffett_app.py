@@ -187,9 +187,9 @@ with tab1:
         query = st.text_input("What would you like to ask Warren Buffett?")
         if len(query)>1:
             with st.spinner('Looking through lots of Shareholder letters now...'):
-                #st.write(prompts.letter_chain(query))
-                st.write(prompts.letter_qa(query))
-                try:
+                st.write(prompts.letter_chain(query))
+                #st.write(prompts.letter_qa(query))
+                """try:
                     st.caption(":blue[Warren's response] :sunglasses:")
                     result = prompts.letter_chain(query)
                     st.write(result['answer'])
@@ -197,6 +197,7 @@ with tab1:
                     st.write(result['source_documents'])
                 except:
                     st.write("Please try to improve your prompt or provide feedback on the error encountered")
+                """
 
 with tab4:
     st.markdown("""
