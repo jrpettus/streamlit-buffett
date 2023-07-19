@@ -86,14 +86,14 @@ def execute_chain(qa_chain, question):
     result = qa_chain({"query": question})
     return result
 
-def fs_chain():
+def fs_chain(question):
     docsearch = get_faiss()
     qa_chain = RetrievalQA.from_chain_type(llm, 
                                            retriever=docsearch.as_retriever(),
                                            chain_type_kwargs={"prompt": FS_PROMPT})
     return qa_chain({"query": question})
 
-def letter_chain():
+def letter_chain(question):
     docsearch = get_pinecone()
     qa_chain = RetrievalQA.from_chain_type(llm, 
                                             retriever=docsearch.as_retriever(),
