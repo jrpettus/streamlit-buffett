@@ -11,6 +11,7 @@ from langchain.memory import ConversationBufferMemory
 from langchain.chains import ChatVectorDBChain # for chatting with the pdf
 #from langchain.chains import ConversationalRetrievalChain
 import pinecone
+# 
 
 TEMPLATE = """ You are an expert SQL developer querying about financials statements. You have to write sql code in a Snowflake database based on the following question. 
 display the sql code in the SQL code format (do not assume anything if the column is not available, do not make up code). 
