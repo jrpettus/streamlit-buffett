@@ -12,7 +12,7 @@ from langchain.chains import ChatVectorDBChain # for chatting with the pdf
 import pinecone
 # 
 
-TEMPLATE = """ You are an expert SQL developer querying about financials statements. You have to write sql code in a Snowflake database based on the following question. 
+FS_TEMPLATE = """ You are an expert SQL developer querying about financials statements. You have to write sql code in a Snowflake database based on the following question. 
 display the sql code in the SQL code format (do not assume anything if the column is not available, do not make up code). 
 ALSO if you are asked to FIX the sql code, then look what was the error and try to fix that by searching the schema definition.
 If you don't know the answer, provide what you think the sql should be. Only include the SQL command in the result.
@@ -41,7 +41,7 @@ Context: {context}
 SQL: ```sql ``` \n
  
 """
-QA_PROMPT = PromptTemplate(input_variables=["question", "context"], template=TEMPLATE, )
+QA_PROMPT = PromptTemplate(input_variables=["question", "context"], template=FS_TEMPLATE, )
 
 llm = ChatOpenAI(
     model_name="gpt-3.5-turbo",
@@ -51,6 +51,7 @@ llm = ChatOpenAI(
 )
 
 embeddings = OpenAIEmbeddings(openai_api_key=st.secrets["openai_key"])
+
 vectorstore = FAISS.load_local("faiss_index", embeddings)
 
 qa_chain = RetrievalQA.from_chain_type(llm,
@@ -60,6 +61,22 @@ qa_chain = RetrievalQA.from_chain_type(llm,
 def execute_chain(question):
  result = qa_chain({"query": question})
  return result
+
+pinecone.init(
+    api_key=st.secrets['pinecone_key'], 
+    environment=st.secrets['pinecone_env'] 
+    )
+
+index_name = "buffett"
+embeddings = OpenAIEmbeddings(openai_api_key=st.secrets["openai_key"])
+docsearch = Pinecone.from_existing_index(index_name,embeddings)
+
+
+letter_chain = RetrievalQA.from_chain_type(llm,
+                                       retriever=docsearch.as_retriever(),
+                                       return_source_documents=True
+                                       #chain_type_kwargs={"prompt": QA_PROMPT}
+                                      )
 
 """
 def execute_chain(query):
