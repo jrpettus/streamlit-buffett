@@ -92,8 +92,8 @@ def fs_chain():
     docsearch = get_faiss()
     qa_chain =  RetrievalQA.from_chain_type(llm, 
                             retriever=docsearch.as_retriever(),
-                            chain_type_kwargs={"prompt": FS_PROMPT})
-                           )
+                            chain_type_kwargs={"prompt": FS_PROMPT}
+                                           )
     return qa_chain({"query": question})
 
 def letter_chain():
