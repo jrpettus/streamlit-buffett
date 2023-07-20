@@ -224,9 +224,11 @@ with tab3:
 
 with tab4:
     st.markdown("""
-    
     Additional Details:
-
     - Tabs 1 and 3 can likely be consolidated leveraging Langchain "tools" with better prompting templates.
-
     """)
+    st.subheader("App Architecture")
+    
+    from PIL import Image
+    image = Image.open('./assets/buffett-app-architecture.png')
+    st.image(image, caption='Buffett app architecture')
