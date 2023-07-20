@@ -53,8 +53,12 @@ def plot_financials(df, x, y, x_cutoff, title):
 
 
 # create tabs
-tab1, tab2, tab3, tab4 = st.tabs(["Financial Statement Natural Language Querying :dollar:", "Financial Data Exploration :chart_with_upwards_trend:",
-                                  "Shareholder Letter Natural Language Querying :memo:", "Additional Details :notebook:"])
+tab1, tab2, tab3, tab4 = st.tabs([
+    "Financial Statement Natural Language Querying :dollar:", 
+    "Financial Data Exploration :chart_with_upwards_trend:",
+    "Shareholder Letter Natural Language Querying :memo:", 
+    "Additional Details :notebook:"]
+    )
 
 with st.sidebar:
     st.markdown("""
