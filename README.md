@@ -10,4 +10,7 @@ Ideally, I would have cleaned this up more and got futher but work got in the wa
 <img width="1179" alt="image" src="https://github.com/jrpettus/streamlit-buffett/assets/11303737/41c45dee-1f22-4070-90f3-a63665530821">
 <img width="1213" alt="image" src="https://github.com/jrpettus/streamlit-buffett/assets/11303737/c3b63824-88a0-4c13-8bf7-1dd363fb2583">
 
+## Application Architecture
+![architecture]([http://url/to/img.png](https://github.com/jrpettus/streamlit-buffett/blob/main/assets/buffett-app-architecture.png)https://github.com/jrpettus/streamlit-buffett/blob/main/assets/buffett-app-architecture.png)
+
 Note I may take this down depending on costs in the future.
