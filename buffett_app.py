@@ -103,9 +103,11 @@ with tab1:
 
     if len(str_input) > 1:
         with st.spinner('Looking up your question in Snowflake now...'):
-            prompts.execute_chain(str_input)
+            #output = prompts.fs_chain(str_input)
+            #st.write(output)
             try:
-                output = prompts.execute_chain(str_input)
+                output = prompts.fs_chain(str_input)
+                st.write(output)
                 try:
                     # if the output doesn't work we will try one additional attempt to fix it
                     query_result = conn.query(output['result'])
@@ -114,7 +116,7 @@ with tab1:
                         st.write(output)
                 except:
                     st.write("The first attempt didn't pull what you were needing. Trying again...")
-                    output = prompts.execute_chain(f'You need to fix the code. If the question is complex, consider using one or more CTE. Also, examine the DDL statements and try to correct this question/query: {output}')
+                    output = prompts.fs_chain(f'You need to fix the code. If the question is complex, consider using one or more CTE. Also, examine the DDL statements and try to correct this question/query: {output}')
                     st.write(conn.query(output['result']))
                     st.write(output)
             except:
@@ -185,14 +187,16 @@ with tab1:
         query = st.text_input("What would you like to ask Warren Buffett?")
         if len(query)>1:
             with st.spinner('Looking through lots of Shareholder letters now...'):
+                
                 try:
                     st.caption(":blue[Warren's response] :sunglasses:")
-                    result = prompts.pdf_question(query)
-                    st.write(result['answer'])
+                    #st.write(prompts.letter_qa(query))
+                    result = prompts.letter_chain(query)
+                    st.write(result['result'])
                     st.caption(":blue[Source Documents Used] :📄:")
                     st.write(result['source_documents'])
                 except:
-                    st.write("Please try to improve your prompt or provide feedback on the error encountered")
+                    st.write("Please try to improve your question")
 
 with tab4:
     st.markdown("""
