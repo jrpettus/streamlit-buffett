@@ -26,7 +26,7 @@ except:
 @st.cache_data()
 def pull_financials(database, schema, statement, ticker):
     """
-    query to pull financial data from snowflake based on database, schema, statemen and ticker
+    query to pull financial data from snowflake based on database, schema, statement and ticker
     """
     df = conn.query(f"select * from {database}.{schema}.{statement} where ticker = '{ticker}' order by year desc")
     df.columns = [col.lower() for col in df.columns]
