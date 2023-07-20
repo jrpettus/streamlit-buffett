@@ -124,81 +124,103 @@ with tab1:
             except:
                 st.write("Please try to improve your prompt or provide feedback on the error encountered")
 
-    with tab2: 
-        st.markdown("""
-        # Financial Data Exploration :chart_with_upwards_trend:
-    
-        View financial statement data for selected companies owned by Warren Buffet by querying Snowflake directly.
-    
-        Available companies are identified in the selection drop down
-        """)
-        sel_tick = st.selectbox("Select a ticker to view", tick_list)
+with tab2: 
+    st.markdown("""
+    # Financial Data Exploration :chart_with_upwards_trend:
 
-        # pull the financial statements
-        # This whole section could be more efficient...
-        inc_st = pull_financials(sf_db, sf_schema, 'income_statement_annual', sel_tick)
-        bal_st = pull_financials(sf_db, sf_schema, 'balance_sheet_annual', sel_tick)
-        bal_st['debt_to_equity'] = bal_st['total_debt'].div(bal_st['total_equity'])
-        cf_st =  pull_financials(sf_db, sf_schema, 'cash_flow_statement_annual', sel_tick) 
-      
-        col1, col2 = st.columns((1,1))
-        with col1:
-            # Net Income metric
-            net_inc = kpi_recent(inc_st, 'net_income')
-            st.metric('Net Income', f'${net_inc[0]}B', delta=round(net_inc[0]-net_inc[1],2), delta_color="normal", help=None, label_visibility="visible")
-            plot_financials(inc_st, 'year', 'net_income', year_cutoff, 'Net Income')
-            
-            # netincome ratio
-            net_inc_ratio = kpi_recent(inc_st, 'net_income_ratio', periods=2, unit=1)
-            st.metric('Net Profit Margin', f'{round(net_inc_ratio[0]*100,2)}%', delta=round(net_inc_ratio[0]-net_inc_ratio[1],2), delta_color="normal", help=None, label_visibility="visible")
-            plot_financials(inc_st, 'year', 'net_income_ratio', year_cutoff, 'Net Profit Margin')
+    View financial statement data for selected companies owned by Warren Buffet by querying Snowflake directly.
+
+    Available companies are identified in the selection drop down
+    """)
+    sel_tick = st.selectbox("Select a ticker to view", tick_list)
+
+    # pull the financial statements
+    # This whole section could be more efficient...
+    inc_st = pull_financials(sf_db, sf_schema, 'income_statement_annual', sel_tick)
+    bal_st = pull_financials(sf_db, sf_schema, 'balance_sheet_annual', sel_tick)
+    bal_st['debt_to_equity'] = bal_st['total_debt'].div(bal_st['total_equity'])
+    cf_st =  pull_financials(sf_db, sf_schema, 'cash_flow_statement_annual', sel_tick) 
+  
+    col1, col2 = st.columns((1,1))
+    with col1:
+        # Net Income metric
+        net_inc = kpi_recent(inc_st, 'net_income')
+        st.metric('Net Income', 
+                  f'${net_inc[0]}B', 
+                  delta=round(net_inc[0]-net_inc[1],2),
+                  delta_color="normal", 
+                  help=None, 
+                  label_visibility="visible")
+        plot_financials(inc_st, 'year', 'net_income', year_cutoff, 'Net Income')
         
-        with col2:
-            # free cashflow
-            fcf = kpi_recent(cf_st, 'free_cash_flow' )
-            st.metric('Free Cashflow', f'${fcf[0]}B', delta=round(fcf[0]-fcf[1],2), delta_color="normal", help=None, label_visibility="visible")
-            plot_financials(cf_st, 'year', 'free_cash_flow', year_cutoff, 'Free Cash Flow')
-
-            # debt to equity
-            debt_ratio = kpi_recent(bal_st, 'debt_to_equity', periods=2, unit=1)
-            st.metric('Debt to Equity', f'{round(debt_ratio[0],2)}', delta=round(debt_ratio[0]-debt_ratio[1],2), delta_color="normal", help=None, label_visibility="visible")
-            plot_financials(bal_st, 'year', 'debt_to_equity', year_cutoff, 'Debt to Equity')
+        # netincome ratio
+        net_inc_ratio = kpi_recent(inc_st, 'net_income_ratio', periods=2, unit=1)
+        st.metric('Net Profit Margin', 
+                  f'{round(net_inc_ratio[0]*100,2)}%',
+                  delta=round(net_inc_ratio[0]-net_inc_ratio[1],2), 
+                  delta_color="normal", 
+                  help=None, 
+                  label_visibility="visible")
+        plot_financials(inc_st, 'year', 'net_income_ratio', year_cutoff, 'Net Profit Margin')
     
-        # enable a financial statment to be selected and viewed
-        sel_statement = st.selectbox("Select a statement to view", fin_statement_list)
-        fin_statement_dict = {'income_statement': inc_st, 'balance_sheet': bal_st, 'cash_flow_statement':cf_st}
-        st.dataframe(fin_statement_dict[sel_statement])
-    
-    with tab3:
-        st.markdown("""
-        # Shareholder Letter Natural Language Querying :memo:
-        ### Ask questions from all of Warren Buffett's annual shareholder letters dating back to 1977
+    with col2:
+        # free cashflow
+        fcf = kpi_recent(cf_st, 'free_cash_flow' )
+        st.metric('Free Cashflow', 
+                  f'${fcf[0]}B', 
+                  delta=round(fcf[0]-fcf[1],2), 
+                  delta_color="normal", 
+                  help=None, 
+                  label_visibility="visible")
+        plot_financials(cf_st, 'year', 'free_cash_flow', year_cutoff, 'Free Cash Flow')
 
-        These letters are much anticipated by investors for the wealth of knowledge that Buffett provides.
-        The tool allows you to interact with these letters by asking questions and a LLM is used to find relevant answers.
+        # debt to equity
+        debt_ratio = kpi_recent(bal_st, 'debt_to_equity', periods=2, unit=1)
+        st.metric('Debt to Equity', 
+                  f'{round(debt_ratio[0],2)}', 
+                  delta=round(debt_ratio[0]-debt_ratio[1],2), 
+                  delta_color="normal", 
+                  help=None, 
+                  label_visibility="visible")
+        plot_financials(bal_st, 'year', 'debt_to_equity', year_cutoff, 'Debt to Equity')
 
-        **Example questions to ask:**
+    # enable a financial statment to be selected and viewed
+    sel_statement = st.selectbox("Select a statement to view", fin_statement_list)
+    fin_statement_dict = {'income_statement': inc_st,
+                          'balance_sheet': bal_st, 
+                          'cash_flow_statement':cf_st}
+    st.dataframe(fin_statement_dict[sel_statement])
 
-        - What was your gain in net worth in 1984?
-        - What are some of your biggest lessons learned?
-        - What do you look for in managers?
-        - Are markets efficient? Give a specific example that you have used in a letter.
-        """
-        )
+with tab3:
+    st.markdown("""
+    # Shareholder Letter Natural Language Querying :memo:
+    ### Ask questions from all of Warren Buffett's annual shareholder letters dating back to 1977
 
-        query = st.text_input("What would you like to ask Warren Buffett?")
-        if len(query)>1:
-            with st.spinner('Looking through lots of Shareholder letters now...'):
-                
-                try:
-                    st.caption(":blue[Warren's response] :sunglasses:")
-                    #st.write(prompts.letter_qa(query))
-                    result = prompts.letter_chain(query)
-                    st.write(result['result'])
-                    st.caption(":blue[Source Documents Used] :📄:")
-                    st.write(result['source_documents'])
-                except:
-                    st.write("Please try to improve your question")
+    These letters are much anticipated by investors for the wealth of knowledge that Buffett provides.
+    The tool allows you to interact with these letters by asking questions and a LLM is used to find relevant answers.
+
+    **Example questions to ask:**
+
+    - What was your gain in net worth in 1984?
+    - What are some of your biggest lessons learned?
+    - What do you look for in managers?
+    - Are markets efficient? Give a specific example that you have used in a letter.
+    """
+    )
+
+    query = st.text_input("What would you like to ask Warren Buffett?")
+    if len(query)>1:
+        with st.spinner('Looking through lots of Shareholder letters now...'):
+            
+            try:
+                st.caption(":blue[Warren's response] :sunglasses:")
+                #st.write(prompts.letter_qa(query))
+                result = prompts.letter_chain(query)
+                st.write(result['result'])
+                st.caption(":blue[Source Documents Used] :📄:")
+                st.write(result['source_documents'])
+            except:
+                st.write("Please try to improve your question")
 
 with tab4:
     st.markdown("""
