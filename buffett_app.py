@@ -8,8 +8,8 @@ import prompts
 st.set_page_config(layout="wide")
 
 # Variables
-sf_db = st.secrets["connections.snowpark"]["database"]
-sf_schema = st.secrets["connections.snowpark"]["schema"]
+sf_db = st.secrets["sf_database"]
+sf_schema = st.secrets["sf_schema"]
 tick_list = ['BRK.A','AAPL','PG','JNJ','MA','MCO','VZ','KO','AXP', 'BAC']
 fin_statement_list = ['income_statement','balance_sheet','cash_flow_statement']
 year_cutoff = 20 # year cutoff for financial statement plotting
