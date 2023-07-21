@@ -2,7 +2,7 @@
 
 This contains the **"Ask the Oracle of Omaha"** Streamlit application that I built for the 2023 Snowflake Summit Streamlit Hackathon. This app took home 2nd place (https://discuss.streamlit.io/t/announcing-the-winners-of-the-summit-hackathon/43344)
 
-The Streamlit App can be viewed ![here](https://jrpettus-streamlit-buffett-buffett-app-hqw5pq.streamlit.app/)
+The Streamlit App can be viewed [here](https://jrpettus-streamlit-buffett-buffett-app-hqw5pq.streamlit.app/)
 
 <img width="1554" alt="image" src="https://github.com/jrpettus/streamlit-buffett/assets/11303737/d75c2532-36e9-4ce2-819f-d567d5eebf05">
 
