@@ -54,9 +54,9 @@ def plot_financials(df, x, y, x_cutoff, title):
 
 # create tabs
 tab1, tab2, tab3, tab4 = st.tabs([
-    "Financial Statement Natural Language Querying :dollar:", 
+    "Financial Statement Questions :dollar:", 
     "Financial Data Exploration :chart_with_upwards_trend:",
-    "Shareholder Letter Natural Language Querying :memo:", 
+    "Shareholder Letter Questions :memo:", 
     "Additional Details :notebook:"]
     )
 
@@ -67,11 +67,11 @@ with st.sidebar:
     This app is powered by Snowflake :snowflake:, Streamlit, OpenAI, Langchain and Pinecone, leveraging Large Language Models (LLMs)
 
     Tabs:
-    ### 1: Financial Statement Natural Language Querying :dollar:
+    ### 1: Financial Statement Questions :dollar:
     Ask financial questions using natural language regarding the investments
     ### 2: Financial Data Exploration :chart_with_upwards_trend:
     Query Snowflake to view financials for various Warren Buffett investments
-    ### 3: Shareholder Letter Natural Language Querying :memo:
+    ### 3: Shareholder Letter Questions :memo:
     Ask various questions based on Warren Buffett's shareholder letters from 1977 through 2022  
 
     **Current Available Companies to ask financials about for tabs 1 and 2:**
@@ -90,7 +90,7 @@ with st.sidebar:
 
 with tab1:
     st.markdown("""
-    # Natural Language Financials Querying :dollar:
+    # Finance Statement Questions :dollar:
     ### Leverage LLMs to translate natural language questions related to financial statements and turn those into direct Snowflake queries
     Data is stored and queried directly from income statement, balance sheet, and cash flow statement in Snowflake
 
@@ -193,7 +193,7 @@ with tab2:
 
 with tab3:
     st.markdown("""
-    # Shareholder Letter Natural Language Querying :memo:
+    # Shareholder Letter Questions :memo:
     ### Ask questions from all of Warren Buffett's annual shareholder letters dating back to 1977
 
     These letters are much anticipated by investors for the wealth of knowledge that Buffett provides.
