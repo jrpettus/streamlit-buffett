@@ -90,7 +90,7 @@ with st.sidebar:
 
 with tab1:
     st.markdown("""
-    # Finance Statement Questions :dollar:
+    # Financial Statement Questions :dollar:
     ### Leverage LLMs to translate natural language questions related to financial statements and turn those into direct Snowflake queries
     Data is stored and queried directly from income statement, balance sheet, and cash flow statement in Snowflake
 
