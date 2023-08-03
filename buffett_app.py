@@ -118,7 +118,7 @@ with tab1:
                         st.write(output)
                 except:
                     st.write("The first attempt didn't pull what you were needing. Trying again...")
-                    output = prompts.fs_chain(f'You need to fix the code. If the question is complex, consider using one or more CTE. Also, examine the DDL statements and try to correct this question/query: {output}')
+                    output = prompts.fs_chain(f'You need to fix the code but ONLY produce SQL code output. If the question is complex, consider using one or more CTE. Examine the DDL statements and try to correct this question/query: {output}')
                     st.write(conn.query(output['result']))
                     st.write(output)
             except:
