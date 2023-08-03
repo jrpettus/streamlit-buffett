@@ -118,11 +118,11 @@ with tab1:
                         st.write(output)
                 except:
                     st.write("The first attempt didn't pull what you were needing. Trying again...")
-                    output = prompts.fs_chain(f'You need to fix the code but ONLY produce SQL code output. If the question is complex, consider using one or more CTE. Examine the DDL statements and try to correct this question/query: {output}. If the question does not pertain to financial statements, ask "Are you sure you meant to ask that on this tab? You might try Tab3..."')
+                    output = prompts.fs_chain(f'You need to fix the code but ONLY produce SQL code output. If the question is complex, consider using one or more CTE. Examine the DDL statements and try to correct this question/query: {output}"')
                     st.write(conn.query(output['result']))
                     st.write(output)
             except:
-                st.write("Please try to improve your prompt or provide feedback on the error encountered")
+                st.write("Please try to improve your question. Also, note this tab is for financial statement questions. Use Tab 3 to ask from shareholder letters.")
 
 with tab2: 
     st.markdown("""
