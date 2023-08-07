@@ -202,7 +202,8 @@ with tab3:
     The tool allows you to interact with these letters by asking questions and a LLM is used to find relevant answers.
 
     **Example questions to ask:**
-
+    
+    - How does your view on managing investment risk differ from professional investment managers?
     - What was your gain in net worth in 1984?
     - What are some of your biggest lessons learned?
     - What do you look for in managers?
