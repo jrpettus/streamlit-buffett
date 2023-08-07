@@ -123,7 +123,7 @@ with tab1:
                     st.write(output)
             except:
                 st.write("Please try to improve your question. Note this tab is for financial statement questions. Use Tab 3 to ask from shareholder letters. Also, only a handful of companies are available, which you can see on the side bar.")
-                st.write(f"Final errored query used: {query_result}")
+                st.write(f"Final errored query used: {output}")
 
 with tab2: 
     st.markdown("""
