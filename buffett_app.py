@@ -41,7 +41,6 @@ def kpi_recent(df, metric, periods=2, unit=1000000000):
     """
     return df.sort_values('year',ascending=False).head(periods)[metric]/unit
 
-@st.cache_data
 def plot_financials(df, x, y, x_cutoff, title):
     """"
     helper to plot the altair financial charts
