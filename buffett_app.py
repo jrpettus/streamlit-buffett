@@ -23,7 +23,7 @@ try:
 except:
     conn.reset()
 
-@st.cache_data()
+@st.cache_data
 def pull_financials(database, schema, statement, ticker):
     """
     query to pull financial data from snowflake based on database, schema, statement and ticker
@@ -33,7 +33,7 @@ def pull_financials(database, schema, statement, ticker):
     return df
 
 # metrics for kpi cards
-@st.cache_data()
+@st.cache_data
 def kpi_recent(df, metric, periods=2, unit=1000000000):
     """
     filters a financial statement dataframe down to the most recent periods
@@ -41,6 +41,7 @@ def kpi_recent(df, metric, periods=2, unit=1000000000):
     """
     return df.sort_values('year',ascending=False).head(periods)[metric]/unit
 
+@st.cache_data
 def plot_financials(df, x, y, x_cutoff, title):
     """"
     helper to plot the altair financial charts
