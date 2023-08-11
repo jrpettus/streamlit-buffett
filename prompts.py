@@ -55,11 +55,13 @@ llm = ChatOpenAI(
     openai_api_key=st.secrets["openai_key"]
 )
 
+@st.cache_data
 def get_faiss():
     " get the loaded FAISS embeddings"
     embeddings = OpenAIEmbeddings(openai_api_key=st.secrets["openai_key"])
     return FAISS.load_local("faiss_index", embeddings)
 
+@st.cache_data
 def get_pinecone():
     " get the pinecone embeddings"
     pinecone.init(
@@ -71,6 +73,7 @@ def get_pinecone():
     embeddings = OpenAIEmbeddings(openai_api_key=st.secrets["openai_key"])
     return Pinecone.from_existing_index(index_name,embeddings)
 
+@st.cache_data
 def fs_chain(question):
     """
     returns a question answer chain for faiss vectordb
@@ -82,6 +85,7 @@ def fs_chain(question):
                                            chain_type_kwargs={"prompt": FS_PROMPT})
     return qa_chain({"query": question})
 
+@st.cache_data
 def letter_chain(question):
     """returns a question answer chain for pinecone vectordb"""
     
@@ -98,6 +102,7 @@ def letter_chain(question):
                                           )
     return qa_chain({"query": question})
 
+@st.cache_data
 def letter_qa(query, temperature=.1,model_name="gpt-3.5-turbo"):
     """
     this method was deprecated but seems to be more efficient from a token perspective
