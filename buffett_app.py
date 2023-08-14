@@ -101,7 +101,7 @@ with tab1:
     **Example questions to ask:**
 
     - What was the net income from for Proctor and Gamble during 2010 through 2020?
-    - What was the revenue and total liabilities for Apple for the last 5 years?
+    - What were Apple's revenue and total liabilities for the last 5 years?
     - Rank the companies in descending order based on their net income in 2022. Include the ticker and net income value
     - What has been the average for total assets and total liabilities for each company over the last 3 years? List the top 3
     """
