@@ -100,8 +100,8 @@ with tab1:
 
     **Example questions to ask:**
 
-    - What was the net income from for Proctor and Gamble during 2010 through 2020?
-    - What were Apple's revenue and total liabilities for the last 5 years?
+    - What was Proctor and Gamble's debt to equity ratio from 2010 through 2020?
+    - What was Apple's debt to equity ratio for the last 5 years?
     - Rank the companies in descending order based on their net income in 2022. Include the ticker and net income value
     - What has been the average for total assets and total liabilities for each company over the last 3 years? List the top 3
     """
