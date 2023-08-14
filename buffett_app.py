@@ -52,7 +52,7 @@ def plot_financials(df, x, y, x_cutoff, title):
     ) 
 
 # adding this to test out caching
-#st.cache_data(ttl=86400)
+st.cache_data(ttl=86400)
 def fs_chain(str_input):
     return prompts.fs_chain(str_input)
 
@@ -100,7 +100,7 @@ with tab1:
 
     **Example questions to ask:**
 
-    - What was the net income from 1996 through 2000 for Proctor and Gamble?
+    - What was the net income from for Proctor and Gamble during 2010 through 2020?
     - What was the revenue and total liabilities for Apple for the last 5 years?
     - Rank the companies in descending order based on their net income in 2022. Include the ticker and net income value
     - What has been the average for total assets and total liabilities for each company over the last 3 years? List the top 3
