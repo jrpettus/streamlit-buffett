@@ -52,7 +52,7 @@ def plot_financials(df, x, y, x_cutoff, title):
     ) 
 
 # adding this to test out caching
-st.cache_data(ttl=86400)
+#st.cache_data(ttl=86400)
 def fs_chain(str_input):
     return prompts.fs_chain(str_input)
 
