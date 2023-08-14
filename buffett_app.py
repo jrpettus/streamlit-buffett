@@ -54,7 +54,19 @@ def plot_financials(df, x, y, x_cutoff, title):
 # adding this to test out caching
 st.cache_data(ttl=86400)
 def fs_chain(str_input):
+    """
+    performs qa capability for a question using sql vector db store
+    the prompts.fs_chain is used but with caching
+    """
     return prompts.fs_chain(str_input)
+
+# adding this to test out caching
+st.cache_data(ttl=86400)
+def sf_query(str_input):
+    """
+    performs snowflake query with caching
+    """
+    return conn.query(str_input)
 
 # create tabs
 tab1, tab2, tab3, tab4 = st.tabs([
@@ -116,14 +128,14 @@ with tab1:
                 #st.write(output)
                 try:
                     # if the output doesn't work we will try one additional attempt to fix it
-                    query_result = conn.query(output['result'])
+                    query_result = sf_query(output['result'])
                     if len(query_result) > 1:
                         st.write(query_result)
                         st.write(output)
                 except:
                     st.write("The first attempt didn't pull what you were needing. Trying again...")
                     output = fs_chain(f'You need to fix the code but ONLY produce SQL code output. If the question is complex, consider using one or more CTE. Examine the DDL statements and answer this question: {output}')
-                    st.write(conn.query(output['result']))
+                    st.write(sf_query(output['result']))
                     st.write(output)
             except:
                 st.write("Please try to improve your question. Note this tab is for financial statement questions. Use Tab 3 to ask from shareholder letters. Also, only a handful of companies are available, which you can see on the side bar.")
