@@ -51,6 +51,10 @@ def plot_financials(df, x, y, x_cutoff, title):
         ).properties(title=title)
     ) 
 
+# adding this to test out caching
+st.cache_data(ttl=86400)
+def fs_chain(str_input):
+    return prompts.fs_chain(str_input)
 
 # create tabs
 tab1, tab2, tab3, tab4 = st.tabs([
@@ -108,7 +112,7 @@ with tab1:
     if len(str_input) > 1:
         with st.spinner('Looking up your question in Snowflake now...'):
             try:
-                output = prompts.fs_chain(str_input)
+                output = fs_chain(str_input)
                 #st.write(output)
                 try:
                     # if the output doesn't work we will try one additional attempt to fix it
@@ -118,7 +122,7 @@ with tab1:
                         st.write(output)
                 except:
                     st.write("The first attempt didn't pull what you were needing. Trying again...")
-                    output = prompts.fs_chain(f'You need to fix the code but ONLY produce SQL code output. If the question is complex, consider using one or more CTE. Examine the DDL statements and answer this question: {output}')
+                    output = fs_chain(f'You need to fix the code but ONLY produce SQL code output. If the question is complex, consider using one or more CTE. Examine the DDL statements and answer this question: {output}')
                     st.write(conn.query(output['result']))
                     st.write(output)
             except:
