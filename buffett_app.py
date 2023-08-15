@@ -58,7 +58,8 @@ def fs_chain(str_input):
     performs qa capability for a question using sql vector db store
     the prompts.fs_chain is used but with caching
     """
-    return prompts.fs_chain(str_input)
+    output = prompts.fs_chain(str_input)
+    return output
 
 # adding this to test out caching
 st.cache_data(ttl=86400)
@@ -66,7 +67,8 @@ def sf_query(str_input):
     """
     performs snowflake query with caching
     """
-    return conn.query(str_input)
+    data = conn.query(str_input)
+    return data
 
 # create tabs
 tab1, tab2, tab3, tab4 = st.tabs([
