@@ -15,7 +15,7 @@ fin_statement_list = ['income_statement','balance_sheet','cash_flow_statement']
 year_cutoff = 20 # year cutoff for financial statement plotting
 
 # establish snowpark connection
-conn = st.experimental_connection("snowpark")
+conn = st.connection("snowflake")
 
 # Reset the connection before using it if it isn't healthy
 try:
