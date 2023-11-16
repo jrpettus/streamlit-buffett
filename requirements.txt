@@ -6,9 +6,9 @@ numpy
 pandas
 matplotlib
 seaborn
-openai
+openai==0.27.3
 streamlit_chat
 langchain==0.0.124
-pinecone-client
+pinecone-client==2.2.1
 sqlalchemy
-faiss-cpu
+faiss-cpu==1.7.4
