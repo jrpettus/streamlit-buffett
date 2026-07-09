@@ -11,6 +11,10 @@ The Streamlit App can be viewed  [here](https://jrpettus-streamlit-buffett-buffe
 <img width="985" alt="image" src="https://github.com/jrpettus/streamlit-buffett/assets/11303737/eb72a6e6-2389-4050-a47d-ef1577a5159b">
 
 
+## Shareholder Letters
+
+The shareholder letter PDFs are no longer included in this repository. Warren Buffett's annual shareholder letters (1977–2022) are publicly available, and there are a number of GitHub repositories that contain methods to download and extract them. Search GitHub for "Berkshire Hathaway shareholder letters" to find a repo that fits your needs, then place the PDFs in a `letters/` directory to run the loading scripts under `load/`.
+
 ## Application Architecture
 ![architecture](https://github.com/jrpettus/streamlit-buffett/blob/main/assets/buffett-app-architecture.png)
 
